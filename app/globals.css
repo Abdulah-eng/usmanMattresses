@@ -88,3 +88,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .product-card {
+    @apply flex flex-col h-full;
+  }
+  
+  .product-card-content {
+    @apply flex-1 flex flex-col;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

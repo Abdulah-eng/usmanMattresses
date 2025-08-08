@@ -1,11 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { Star, Truck } from 'lucide-react'
+import { Star, Truck, Clock, Leaf, Zap, Shield, Check } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
+import { useState } from "react"
 
 interface Product {
   id: number
@@ -18,12 +19,19 @@ interface Product {
   rating: number
   reviewCount: number
   firmness: string
+  firmnessLevel: number // 1-10 scale
   features: string[]
   originalPrice: number
   currentPrice: number
   savings: number
   freeDelivery: string
-  size?: string // Optional size field
+  setupService?: boolean
+  setupCost?: number
+  certifications: string[]
+  sizes: string[]
+  selectedSize?: string
+  monthlyPrice?: number
+  images?: string[] // Multiple product images
 }
 
 interface ProductCardProps {
@@ -32,6 +40,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { dispatch } = useCart()
+  const [selectedImage, setSelectedImage] = useState(0)
+  const [selectedSize, setSelectedSize] = useState(product.selectedSize || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'Queen'))
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -39,13 +49,67 @@ export function ProductCard({ product }: ProductCardProps) {
         key={i}
         className={`h-4 w-4 ${
           i < Math.floor(rating) 
-            ? 'fill-orange-600 text-orange-600' 
+            ? 'fill-orange-500 text-orange-500' 
             : i < rating 
-            ? 'fill-orange-300 text-orange-600' 
+            ? 'fill-orange-300 text-orange-500' 
             : 'text-gray-300'
         }`}
       />
     ))
+  }
+
+  const renderFirmnessScale = (level: number) => {
+    return (
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-sm text-gray-600">Soft</span>
+        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-orange-500 rounded-full transition-all duration-300"
+            style={{ width: `${level * 10}%` }}
+          />
+        </div>
+        <span className="text-sm text-gray-600">Firm</span>
+      </div>
+    )
+  }
+
+  const getFeatureIcon = (feature: string) => {
+    const featureLower = feature.toLowerCase()
+    if (featureLower.includes('bamboo') || featureLower.includes('organic')) return <Leaf className="h-3 w-3" />
+    if (featureLower.includes('motion')) return <Zap className="h-3 w-3" />
+    if (featureLower.includes('foam') || featureLower.includes('certipur')) return <Shield className="h-3 w-3" />
+    return <Check className="h-3 w-3" />
+  }
+
+  const getProductImage = (category: string, type: string) => {
+    // High-quality lifestyle images for different categories
+    const imageMap: Record<string, string> = {
+      'mattresses': 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop',
+      'pillows': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'bedding': 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop',
+      'adjustable-bases': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'box-springs': 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop',
+      'beds': 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop',
+      'sofas': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop'
+    }
+    
+    // Specific lifestyle images based on product type
+    const typeSpecificImages: Record<string, string> = {
+      'Memory Foam': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'Hybrid': 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop',
+      'Spring': 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop',
+      'Cooling Gel': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'Mattress Protectors': 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop',
+      'Sheets': 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop',
+      'Premium': 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop',
+      'Smart': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'Memory Foam Pillow': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'Cooling Gel Pillow': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'Down Alternative Pillow': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+      'Cervical Support Pillow': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop'
+    }
+    
+    return typeSpecificImages[type] || imageMap[category] || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop'
   }
 
   const handleAddToCart = () => {
@@ -58,94 +122,180 @@ export function ProductCard({ product }: ProductCardProps) {
         image: product.image,
         currentPrice: product.currentPrice,
         originalPrice: product.originalPrice,
-        size: product.size || 'Queen' // Default size
+        size: selectedSize
       }
     })
   }
 
   return (
-    <Card className="group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <CardContent className="p-6">
-        {/* Brand and Badge */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <div className="text-sm text-gray-600 mb-1">{product.brand}</div>
-            <div className={`text-lg font-bold ${product.brandColor === 'orange' ? 'text-orange-700' : 'text-blue-900'}`}>
-              {product.brand}
+    <Card className="group product-card bg-white border-2 border-gray-200 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-xl overflow-hidden">
+      <CardContent className="p-0 product-card-content">
+        {/* Product Images Section */}
+        <div className="relative">
+          {/* Main Product Image */}
+          <div className="relative w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200">
+            <Image
+              src={product.images?.[selectedImage] || product.image || getProductImage(product.category, product.type)}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
+            
+            {/* Badges */}
+            <div className="absolute top-4 right-4 space-y-2">
+              <Badge className="bg-orange-500 text-white border-0 px-3 py-1 text-sm font-medium shadow-lg">
+                {product.badge}
+              </Badge>
+              <Badge className="bg-orange-500 text-white border-0 px-3 py-1 text-sm font-medium shadow-lg">
+                Save £{product.savings.toFixed(2)}
+              </Badge>
             </div>
           </div>
-          <Badge 
-            variant={product.badgeColor === 'orange' ? 'default' : 'secondary'}
-            className={product.badgeColor === 'orange' ? 'bg-orange-200 text-orange-800 border-orange-300' : 'bg-blue-900 text-white border-blue-900'}
-          >
-            {product.badge}
-          </Badge>
+
+          {/* Thumbnail Images */}
+          {product.images && product.images.length > 1 && (
+            <div className="flex gap-2 mt-4 px-4">
+              {product.images.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(index)}
+                  className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                    selectedImage === index ? 'border-orange-500 shadow-md' : 'border-gray-200 hover:border-orange-300'
+                  }`}
+                >
+                  <Image
+                    src={image}
+                    alt={`${product.name} view ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Product Name */}
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
-          {product.name}
-        </h3>
+        {/* Product Information */}
+        <div className="px-6 py-6 space-y-5 flex-1 flex flex-col">
+          {/* Brand and Product Name */}
+          <div className="relative">
+            <div className="text-sm text-gray-500 mb-1">{product.brand}</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">{product.name}</h3>
+            <p className="text-sm text-gray-600">{product.brand} Premium</p>
+            
+            {/* Brand Logo */}
+            <div className="absolute top-0 right-0 w-8 h-8 bg-black rounded-full flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">{product.brand.substring(0, 2)}</span>
+            </div>
+          </div>
 
-        {/* Product Image */}
-        <div className="relative mb-6 bg-gray-50 rounded-lg overflow-hidden">
-          <Image
-            src={product.image || "/placeholder.svg"}
-            alt={product.name}
-            width={300}
-            height={300}
-            className="w-full h-48 object-contain bg-white"
-          />
-        </div>
-
-        {/* Rating */}
-        <div className="flex items-center gap-2 mb-4">
-          <div className="flex">{renderStars(product.rating)}</div>
-          <span className="font-semibold">{product.rating}</span>
-          <span className="text-sm text-gray-500">Based on {product.reviewCount} reviews</span>
-        </div>
-
-        {/* Features */}
-        <div className="space-y-2 mb-6">
+          {/* Rating and Reviews */}
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-black rounded-full"></div>
-            <span className="font-medium">{product.firmness}</span>
+            <div className="flex">{renderStars(product.rating)}</div>
+            <span className="font-semibold text-gray-900">{product.rating}</span>
+            <span className="text-sm text-gray-500">Based on {product.reviewCount} reviews</span>
           </div>
-          {product.features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-              <div className="w-3 h-3 border border-gray-400 rounded-sm flex items-center justify-center">
-                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+
+          {/* Features */}
+          <div className="flex flex-wrap gap-2">
+            {product.features.map((feature, index) => (
+              <Badge 
+                key={index}
+                variant="outline" 
+                className="bg-white border-gray-200 text-gray-700 px-3 py-1 text-sm"
+              >
+                <span className="mr-1">{getFeatureIcon(feature)}</span>
+                {feature}
+              </Badge>
+            ))}
+          </div>
+
+                  {/* Firmness Scale */}
+        {product.firmnessLevel && product.firmnessLevel > 0 && renderFirmnessScale(product.firmnessLevel)}
+
+          {/* Pricing */}
+          <div className="space-y-2">
+            <div className="text-sm text-gray-500">Starting from</div>
+            <div className="flex items-baseline gap-3">
+              <span className="text-2xl font-bold text-gray-900">£{product.currentPrice.toFixed(2)}</span>
+              <div className="flex flex-col">
+                <span className="text-gray-500 line-through text-sm">£{product.originalPrice.toFixed(2)}</span>
+                <span className="text-orange-600 font-medium text-sm">Save £{product.savings.toFixed(2)}</span>
               </div>
-              <span>{feature}</span>
             </div>
-          ))}
-        </div>
-
-        {/* Pricing */}
-        <div className="mb-4">
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-sm text-gray-500">from</span>
-            <span className="text-2xl font-bold text-gray-900">£{product.currentPrice.toFixed(2)}</span>
+            {product.monthlyPrice && (
+              <p className="text-sm text-gray-900">Pay monthly from £{product.monthlyPrice}/mo. No fees.</p>
+            )}
+            <p className="text-xs text-gray-500">*Prices vary. Free UK delivery.</p>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-500 line-through">£{product.originalPrice.toFixed(2)}</span>
-            <span className="text-orange-700 font-medium">save £{product.savings.toFixed(2)}</span>
+
+          {/* Delivery and Service */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Truck className="h-4 w-4 text-gray-600" />
+                <span className="text-sm text-gray-900">Free Delivery</span>
+              </div>
+              <span className="text-sm text-gray-600">{product.freeDelivery}</span>
+            </div>
+            {product.setupService && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm text-gray-900">Setup Service</span>
+                </div>
+                <span className="text-sm text-gray-600">+£{product.setupCost}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Certifications */}
+          {product.certifications && product.certifications.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {product.certifications.map((cert, index) => (
+                <Badge 
+                  key={index}
+                  variant="outline" 
+                  className="bg-white border-gray-200 text-gray-700 px-3 py-1 text-sm"
+                >
+                  {cert}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+                  {/* Sizes */}
+        {product.sizes && product.sizes.length > 0 && (
+          <div className="space-y-3">
+            <div className="text-sm font-medium text-gray-900">Sizes</div>
+            <div className="flex flex-wrap gap-2">
+              {product.sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedSize === size
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+          {/* Call to Action */}
+          <div className="mt-auto pt-4">
+            <Button 
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 text-base rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              onClick={handleAddToCart}
+            >
+              Buy Now &gt;
+            </Button>
           </div>
         </div>
-
-        {/* Free Delivery */}
-        <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-          <Truck className="h-4 w-4" />
-          <span>Free delivery {product.freeDelivery}</span>
-        </div>
-
-        {/* Add to Cart Button */}
-        <Button 
-          className="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium"
-          onClick={handleAddToCart}
-        >
-          Add to Cart
-        </Button>
       </CardContent>
     </Card>
   )

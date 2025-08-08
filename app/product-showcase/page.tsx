@@ -1,15 +1,21 @@
-import { ProductCard } from "@/components/product-card"
+"use client"
 
-export function FeaturedProducts() {
-  const featuredProducts = [
+import { ProductGridNew } from "@/components/product-grid-new"
+import { ProductDetailCard } from "@/components/product-detail-card"
+import { useState } from "react"
+
+export default function ProductShowcasePage() {
+  const [selectedProduct, setSelectedProduct] = useState<number | null>(null)
+
+  const showcaseProducts = [
     {
       id: 1,
-      name: "King Arthur Mattress",
-      brand: "ARTHUR SLEEP",
+      name: "Bedora Living Premium",
+      brand: "Bedora Living",
       brandColor: "orange",
       badge: "Best Seller",
       badgeColor: "orange",
-      image: "/mattress-image.svg",
+      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop",
       rating: 4.8,
       reviewCount: 127,
       firmness: "MEDIUM FIRM",
@@ -29,12 +35,12 @@ export function FeaturedProducts() {
     },
     {
       id: 2,
-      name: "Dream Mirapocket 1000 Mattress",
+      name: "Dream Mirapocket 1000",
       brand: "SILENTNIGHT",
       brandColor: "orange",
       badge: "New Model",
       badgeColor: "gray",
-      image: "/mattress-image.svg",
+      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop",
       rating: 4.0,
       reviewCount: 256,
       firmness: "MEDIUM",
@@ -49,16 +55,16 @@ export function FeaturedProducts() {
       sizes: ["Single", "Double", "King", "Super King"],
       selectedSize: "Double",
       monthlyPrice: 25,
-      images: ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop"]
+      images: ["https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"]
     },
     {
       id: 3,
-      name: "Ice Arthur Mattress",
+      name: "Ice Arthur Cooling",
       brand: "ARTHUR SLEEP",
       brandColor: "orange",
       badge: "Cooling",
       badgeColor: "gray",
-      image: "/mattress-image.svg",
+      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop",
       rating: 4.5,
       reviewCount: 189,
       firmness: "MEDIUM",
@@ -78,20 +84,48 @@ export function FeaturedProducts() {
     }
   ]
 
+  const selectedProductData = showcaseProducts.find(p => p.id === selectedProduct)
+
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-          Featured Products
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredProducts.map((product) => (
-            <div key={product.id} className="h-full">
-              <ProductCard product={product} />
-            </div>
-          ))}
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold text-gray-900">Product Showcase</h1>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                selectedProduct === null
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Grid View
+            </button>
+            <button
+              onClick={() => setSelectedProduct(1)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                selectedProduct !== null
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Detail View
+            </button>
+          </div>
         </div>
       </div>
-    </section>
+
+      {/* Content */}
+      {selectedProduct === null ? (
+        <ProductGridNew 
+          products={showcaseProducts} 
+          title="Product Cards with Orange Color Scheme" 
+        />
+      ) : selectedProductData ? (
+        <ProductDetailCard product={selectedProductData} />
+      ) : null}
+    </div>
   )
 }

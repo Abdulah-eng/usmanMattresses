@@ -7,37 +7,37 @@ export function CategoryGrid() {
     {
       name: "Mattresses",
       href: "/mattresses",
-      image: "/mattress-image.svg",
+      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=1200&h=800&fit=crop",
       description: "Premium comfort for better sleep"
     },
     {
       name: "Beds",
       href: "/beds",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=1200&h=800&fit=crop",
       description: "Stylish frames for every bedroom"
     },
     {
       name: "Sofas",
       href: "/sofas",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&h=800&fit=crop",
       description: "Comfort meets style in your living room"
     },
     {
       name: "Bunk Beds",
       href: "/bunk-beds",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=1200&h=800&fit=crop",
       description: "Space-saving solutions for kids"
     },
     {
       name: "Mattress Toppers",
       href: "/mattress-toppers",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200&h=800&fit=crop",
       description: "Extra comfort for your existing mattress"
     },
     {
       name: "Pillows",
       href: "/pillows",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=800&fit=crop",
       description: "Perfect support for your head and neck"
     }
   ]
@@ -63,9 +63,9 @@ export function CategoryGrid() {
                     <Image
                       src={category.image || "/placeholder.svg"}
                       alt={category.name}
-                      width={400}
-                      height={300}
-                      className="w-full h-48 object-contain bg-white group-hover:scale-105 transition-transform duration-300"
+                      width={1200}
+                      height={800}
+                      className="w-full h-48 object-cover bg-white group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-6">
