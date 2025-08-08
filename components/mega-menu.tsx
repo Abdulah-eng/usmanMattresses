@@ -258,7 +258,7 @@ export function MegaMenu({ category, isVisible, onClose }: MegaMenuProps) {
         key={i}
         className={`h-3 w-3 ${
           i < Math.floor(rating) 
-            ? 'fill-orange-400 text-orange-400' 
+            ? 'fill-orange-600 text-orange-600' 
             : 'text-gray-300'
         }`}
       />
@@ -289,7 +289,7 @@ export function MegaMenu({ category, isVisible, onClose }: MegaMenuProps) {
                   <Heart className="h-4 w-4 text-gray-600" />
                 </button>
                 {product.badge && (
-                  <Badge className="absolute top-3 left-3 bg-orange-500 text-white">
+                  <Badge className="absolute top-3 left-3 bg-orange-600 text-white">
                     🔥 {product.badge}
                   </Badge>
                 )}

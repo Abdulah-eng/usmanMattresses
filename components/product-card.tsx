@@ -39,9 +39,9 @@ export function ProductCard({ product }: ProductCardProps) {
         key={i}
         className={`h-4 w-4 ${
           i < Math.floor(rating) 
-            ? 'fill-orange-400 text-orange-400' 
+            ? 'fill-orange-600 text-orange-600' 
             : i < rating 
-            ? 'fill-orange-200 text-orange-400' 
+            ? 'fill-orange-300 text-orange-600' 
             : 'text-gray-300'
         }`}
       />
@@ -70,13 +70,13 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-sm text-gray-600 mb-1">{product.brand}</div>
-            <div className={`text-lg font-bold ${product.brandColor === 'orange' ? 'text-orange-500' : 'text-blue-900'}`}>
+            <div className={`text-lg font-bold ${product.brandColor === 'orange' ? 'text-orange-700' : 'text-blue-900'}`}>
               {product.brand}
             </div>
           </div>
           <Badge 
             variant={product.badgeColor === 'orange' ? 'default' : 'secondary'}
-            className={product.badgeColor === 'orange' ? 'bg-orange-100 text-orange-700 border-orange-200' : 'bg-blue-900 text-white border-blue-900'}
+            className={product.badgeColor === 'orange' ? 'bg-orange-200 text-orange-800 border-orange-300' : 'bg-blue-900 text-white border-blue-900'}
           >
             {product.badge}
           </Badge>
@@ -129,7 +129,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-500 line-through">£{product.originalPrice.toFixed(2)}</span>
-            <span className="text-orange-500 font-medium">save £{product.savings.toFixed(2)}</span>
+            <span className="text-orange-700 font-medium">save £{product.savings.toFixed(2)}</span>
           </div>
         </div>
 

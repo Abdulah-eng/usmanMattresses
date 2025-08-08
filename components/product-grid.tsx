@@ -308,20 +308,20 @@ export function ProductGrid({ category, filters, sortBy }: ProductGridProps) {
       badge: "Popular",
       badgeColor: "gray",
       image: "/mattress-image.svg",
-      rating: 4.2 + Math.random() * 0.6,
-      reviewCount: Math.floor(Math.random() * 500) + 50,
-      firmness: ["SOFT", "MEDIUM", "FIRM"][Math.floor(Math.random() * 3)],
+      rating: 4.2 + (i % 6) * 0.1,
+      reviewCount: 50 + (i * 25) % 500,
+      firmness: ["SOFT", "MEDIUM", "FIRM"][i % 3],
       features: ["Premium Quality", "Long Lasting", "Comfortable", "Motion Isolation", "Edge Support"],
-      originalPrice: 300 + Math.random() * 400,
-      currentPrice: 250 + Math.random() * 300,
-      savings: 50 + Math.random() * 100,
+      originalPrice: 300 + (i * 20) % 400,
+      currentPrice: 250 + (i * 15) % 300,
+      savings: 50 + (i * 5) % 100,
       freeDelivery: "Tomorrow",
       category,
-      type: ["Memory Foam", "Spring", "Hybrid", "Latex", "Adjustable"][Math.floor(Math.random() * 5)],
-      size: ["Twin", "Twin XL", "Full", "Queen", "King", "California King"][Math.floor(Math.random() * 6)],
-      comfortLevel: ["Soft", "Medium", "Firm", "Extra Firm"][Math.floor(Math.random() * 4)],
-      inStore: Math.random() > 0.5,
-      onSale: Math.random() > 0.5
+      type: ["Memory Foam", "Spring", "Hybrid", "Latex", "Adjustable"][i % 5],
+      size: ["Twin", "Twin XL", "Full", "Queen", "King", "California King"][i % 6],
+      comfortLevel: ["Soft", "Medium", "Firm", "Extra Firm"][i % 4],
+      inStore: i % 2 === 0,
+      onSale: i % 3 === 0
     }))
   ]
 
