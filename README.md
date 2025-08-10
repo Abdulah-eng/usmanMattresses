@@ -21,7 +21,7 @@ A modern, responsive e-commerce website for mattresses and sleep products built 
 - **Styling**: Tailwind CSS
 - **UI Components**: Radix UI + Custom components
 - **State Management**: React Context API
-- **Package Manager**: pnpm
+- **Package Manager**: npm or pnpm
 - **Icons**: Lucide React
 - **Fonts**: Geist Sans
 
@@ -109,16 +109,16 @@ usman/
 
 2. **Install dependencies**
    ```bash
-   pnpm install
-   # or
    npm install
+   # or
+   pnpm install
    ```
 
 3. **Run the development server**
    ```bash
-   pnpm dev
-   # or
    npm run dev
+   # or
+   pnpm dev
    ```
 
 4. **Open your browser**
@@ -126,10 +126,14 @@ usman/
 
 ### Available Scripts
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm lint` - Run ESLint
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Environment Variables
+
+Create a `.env.local` from `.env.example` and set your keys.
 
 ## 📱 Pages
 

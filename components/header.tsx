@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useMounted } from "@/hooks/use-mobile"
 import Link from "next/link"
 import { Menu, Search, ShoppingCart, Heart, X, Phone, MapPin, Truck, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -17,17 +18,12 @@ export function Header() {
     minutes: 48,
     seconds: 0
   })
-  const [isClient, setIsClient] = useState(false)
+  const mounted = useMounted()
   const { state } = useCart()
 
-  // Set client flag on mount
+  // Countdown timer effect - only run on client
   useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (!isClient) return
+    if (!mounted) return
     
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -45,7 +41,7 @@ export function Header() {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [isClient])
+  }, [mounted])
 
   const navigationItems = [
     { name: "Mattresses", href: "/mattresses", key: "mattresses" },
@@ -64,7 +60,7 @@ export function Header() {
             <span className="mr-4">UP TO 50% OFF - MID WEEK SAVINGS</span>
             <span className="flex items-center gap-1">
               <span>ENDS IN</span>
-              {isClient ? (
+              {mounted ? (
                 <>
                   <span className="font-bold">{timeLeft.days.toString().padStart(2, '0')} DAYS</span>
                   <span className="font-bold">{timeLeft.hours.toString().padStart(2, '0')} HOURS</span>

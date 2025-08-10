@@ -39,7 +39,7 @@ export function PopularCategories({ onCategorySelect }: PopularCategoriesProps) 
               onClick={() => onCategorySelect(category.filterKey, category.filterValue)}
             >
               <CardContent className="p-4 flex flex-col items-center justify-center">
-                <category.icon className="h-8 w-8 text-blue-900 mb-2" />
+                <category.icon className="h-8 w-8 text-orange-500 mb-2" />
                 <p className="font-medium text-gray-800">{category.name}</p>
                 <p className="text-sm text-gray-500">{category.itemsCount} Items</p>
               </CardContent>

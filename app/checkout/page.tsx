@@ -269,8 +269,16 @@ export default function CheckoutPage() {
                       <Button variant="outline" onClick={prevStep} className="flex-1">
                         Back
                       </Button>
-                      <Button className="flex-1 bg-blue-900 hover:bg-blue-800">
-                        Complete Order
+                      <Button className="flex-1 bg-blue-900 hover:bg-blue-800" onClick={async ()=>{
+                        const res = await fetch('/api/checkout', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ items: state.items, customer: { email: formData.email } })
+                        })
+                        const data = await res.json()
+                        if (data?.url) window.location.href = data.url
+                      }}>
+                        Pay with Stripe
                       </Button>
                     </div>
                   </CardContent>
