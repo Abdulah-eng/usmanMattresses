@@ -45,7 +45,6 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { dispatch } = useCart()
   const [selectedImage, setSelectedImage] = useState(0)
-  const [selectedSize, setSelectedSize] = useState(product.selectedSize || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'Queen'))
   const [selectedFirmness, setSelectedFirmness] = useState(product.firmness || 'Medium')
   const categoryForLink = product.category || 'mattresses'
 
@@ -178,7 +177,7 @@ export function ProductCard({ product }: ProductCardProps) {
         image: safeProduct.image || safeProduct.images?.[0] || '',
         currentPrice: safeProduct.currentPrice || safeProduct.price || 0,
         originalPrice: safeProduct.originalPrice || safeProduct.price || 0,
-        size: selectedSize
+        size: safeProduct.selectedSize || 'Queen' // Assuming default size if not available
       }
     })
   }
@@ -306,28 +305,6 @@ export function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
           </div>
-
-          {/* Sizes */}
-          {safeProduct.sizes && safeProduct.sizes.length > 0 && (
-            <div className="space-y-3">
-              <div className="text-sm font-medium text-gray-900">Sizes</div>
-              <div className="flex flex-wrap gap-2">
-                {safeProduct.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      selectedSize === size
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Call to Action */}
           <div className="mt-auto pt-4">
