@@ -89,6 +89,61 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               </button>
             ))}
           </div>
+
+          {/* Reasons to Buy */}
+          <div className="mt-6 border border-gray-200 rounded-xl p-6 bg-gray-50">
+            <h2 className="text-xl font-bold text-blue-800 mb-4">Reasons to Buy</h2>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-base text-gray-700 leading-relaxed break-words">Premium quality pocket spring construction</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-base text-gray-700 leading-relaxed break-words">Medium-firm support for optimal comfort</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-base text-gray-700 leading-relaxed break-words">1000 individual springs for superior support</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-base text-gray-700 leading-relaxed break-words">Available with fast delivery</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-base text-gray-700 leading-relaxed break-words">Multiple size options to suit any bed</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-base text-gray-700 leading-relaxed break-words">Premium fabric cover with breathable design</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Right: details - now takes 2/5 of the width */}
@@ -99,49 +154,30 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < (product.rating || 4) ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
+                  <Star key={i} className={`h-4 w-4 ${i < (product.rating || 4) ? "text-orange-500 fill-current" : "text-gray-300"}`} />
                 ))}
               </div>
               <span className="text-sm text-gray-600">({product.reviewCount || 0} reviews)</span>
             </div>
             <div className="text-3xl font-bold text-black mb-2">£{product.currentPrice}</div>
             {product.originalPrice && product.originalPrice > product.currentPrice && (
-              <div className="text-lg text-gray-500 line-through">£{product.originalPrice}</div>
+              <div className="text-lg text-gray-500 line-through mb-3">£{product.originalPrice}</div>
             )}
-          </div>
-
-          {/* Save Amount */}
-          {product.originalPrice && product.originalPrice > product.currentPrice && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                  </svg>
+            {/* Save Amount */}
+            {product.originalPrice && product.originalPrice > product.currentPrice && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-semibold text-green-800">
+                    Save £{(product.originalPrice - product.currentPrice).toFixed(2)} ({Math.round(((product.originalPrice - product.currentPrice) / product.originalPrice) * 100)}% off)
+                  </span>
                 </div>
-                <span className="text-sm font-semibold text-green-800">
-                  Save £{(product.originalPrice - product.currentPrice).toFixed(2)} ({Math.round(((product.originalPrice - product.currentPrice) / product.originalPrice) * 100)}% off)
-                </span>
               </div>
-            </div>
-          )}
-
-          {/* Select Colour */}
-          <div className="border rounded-xl p-4">
-            <div className="text-sm font-semibold text-gray-900 mb-3">Select Colour</div>
-            <div className="flex gap-3">
-              {["Oak", "Walnut", "White"].map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setSelectedColor(c)}
-                  className={`px-4 py-2 rounded-lg border text-sm ${
-                    selectedColor === c ? "bg-blue-800 text-white border-blue-800" : "bg-white text-gray-700 border-gray-200 hover:border-blue-300"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+            )}
           </div>
 
           {/* Product Features */}
@@ -173,6 +209,24 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
             </div>
           </div>
 
+          {/* Select Colour */}
+          <div className="border rounded-xl p-4">
+            <div className="text-sm font-semibold text-gray-900 mb-3">Select Colour</div>
+            <div className="flex gap-3">
+              {["Oak", "Walnut", "White"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setSelectedColor(c)}
+                  className={`px-4 py-2 rounded-lg border text-sm ${
+                    selectedColor === c ? "bg-blue-800 text-white border-blue-800" : "bg-white text-gray-700 border-gray-200 hover:border-blue-300"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Choose Size - Clickable Option */}
           <div className="border-b border-gray-200 pb-4">
             <button 
@@ -186,7 +240,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
                   </svg>
                 </div>
-                <span className="text-blue-800 font-semibold">Choose Colour</span>
+                <span className="text-blue-800 font-semibold">Choose Size</span>
               </div>
               <div className="text-gray-400">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
@@ -199,9 +253,9 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
           {/* Size Modal */}
           {sizeModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Choose a Colour</h3>
+              <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold">Choose a Size</h3>
                   <button 
                     onClick={() => setSizeModalOpen(false)}
                     className="text-gray-400 hover:text-gray-600"
@@ -211,31 +265,116 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     </svg>
                   </button>
                 </div>
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-4">
                   {[
-                    { name: "Oak", description: "Natural wood finish", icon: "🟤" },
-                    { name: "Walnut", description: "Rich dark finish", icon: "🟫" },
-                    { name: "White", description: "Clean modern look", icon: "⚪" }
-                  ].map((colour) => (
-                    <div key={colour.name} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-6 text-2xl">
-                          {colour.icon}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{colour.name}</div>
-                          <div className="text-sm text-gray-500">{colour.description}</div>
-                        </div>
+                    { 
+                      name: "3' Single", 
+                      dimensions: "W 90cm X L 190cm (3' x 6'3\")", 
+                      availability: "Dispatched within 45 Days",
+                      inStock: false,
+                      wasPrice: 579.00,
+                      currentPrice: 520.00
+                    },
+                    { 
+                      name: "4' Small Double", 
+                      dimensions: "W 120cm X L 190cm (4' x 6'3\")", 
+                      availability: "In Stock",
+                      inStock: true,
+                      wasPrice: 679.00,
+                      currentPrice: 620.00
+                    },
+                    { 
+                      name: "4'6 Double", 
+                      dimensions: "W 135cm X L 190cm (4'6\" x 6'3\")", 
+                      availability: "In Stock",
+                      inStock: true,
+                      wasPrice: 679.00,
+                      currentPrice: 620.00
+                    },
+                    { 
+                      name: "5' Kingsize", 
+                      dimensions: "W 150cm X L 200cm (5' x 6'6\")", 
+                      availability: "In Stock",
+                      inStock: true,
+                      wasPrice: 799.00,
+                      currentPrice: 740.00
+                    },
+                    { 
+                      name: "6' Super Kingsize", 
+                      dimensions: "W 180cm X L 200cm (6' x 6'6\")", 
+                      availability: "In Stock",
+                      inStock: true,
+                      wasPrice: 999.00,
+                      currentPrice: 890.00
+                    },
+                    { 
+                      name: "5' Kingsize ZIP", 
+                      dimensions: "5' x 6'6\" Or Two Halves 2'6\" x 6'6\"", 
+                      availability: "Dispatched within 45 Days",
+                      inStock: false,
+                      wasPrice: 1549.00,
+                      currentPrice: 1379.00
+                    },
+                    { 
+                      name: "6' Super Kingsize ZIP", 
+                      dimensions: "6' x 6'6\" Or Two Halves 3' x 6'6\"", 
+                      availability: "Dispatched within 45 Days",
+                      inStock: false,
+                      wasPrice: 1899.00,
+                      currentPrice: 1699.00
+                    }
+                  ].map((size) => (
+                    <div
+                      key={size.name}
+                      className={`relative p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 cursor-pointer ${
+                        selectedSize === size.name 
+                          ? 'border-blue-500 bg-blue-50 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      }`}
+                      onClick={() => {
+                        setSelectedSize(size.name);
+                        setSizeModalOpen(false);
+                      }}
+                    >
+                      {/* Size Name */}
+                      <div className="font-semibold text-lg text-gray-900 mb-2">{size.name}</div>
+                      
+                      {/* Dimensions */}
+                      <div className="text-sm text-gray-600 mb-3">{size.dimensions}</div>
+                      
+                      {/* Availability Status */}
+                      <div className="flex items-center gap-2 mb-3">
+                        {size.inStock ? (
+                          <div className="flex items-center gap-1 text-green-600">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span className="text-sm font-medium">{size.availability}</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 text-orange-600">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span className="text-sm font-medium">{size.availability}</span>
+                          </div>
+                        )}
                       </div>
-                      <button
-                        onClick={() => {
-                          setSelectedColor(colour.name);
-                          setSizeModalOpen(false);
-                        }}
-                        className="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900 text-sm"
-                      >
-                        Choose
-                      </button>
+                      
+                      {/* Pricing */}
+                      <div className="space-y-1">
+                        <div className="text-sm text-gray-500 line-through">Was £{size.wasPrice.toFixed(2)}</div>
+                        <div className="text-xl font-bold text-red-600">£{size.currentPrice.toFixed(2)}</div>
+                      </div>
+                      
+                      {/* Selection Indicator */}
+                      {selectedSize === size.name && (
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -651,64 +790,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       </div>
 
-      {/* Reasons to Buy */}
-      <div className="mt-12 border border-gray-200 rounded-xl p-6 bg-gray-50">
-        <h2 className="text-2xl font-bold text-blue-800 mb-6">Reasons to Buy</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <span className="text-sm text-gray-700">Premium quality pocket spring construction</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <span className="text-sm text-gray-700">Medium-firm support for optimal comfort</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <span className="text-sm text-gray-700">1000 individual springs for superior support</span>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <span className="text-sm text-gray-700">Available with fast delivery</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <span className="text-sm text-gray-700">Multiple size options to suit any bed</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <span className="text-sm text-gray-700">Premium fabric cover with breathable design</span>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       {/* Product Reviews */}
       <div className="mt-12 border border-gray-200 rounded-xl p-6 bg-gray-50">
