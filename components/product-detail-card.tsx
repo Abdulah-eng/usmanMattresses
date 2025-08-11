@@ -1,11 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { Star, Truck, Clock, Leaf, Zap, Shield, Check, ArrowRight } from 'lucide-react'
+import { Star, Truck, Clock, Leaf, Zap, Shield, Check, ArrowRight, Heart, Share2, TruckIcon, ShieldCheck, Award, Users, MapPin, Phone } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { useState } from "react"
+import { Separator } from "@/components/ui/separator"
 
 interface ProductDetail {
   id: number
@@ -41,16 +42,17 @@ export function ProductDetailCard({ product }: ProductDetailCardProps) {
   const { dispatch } = useCart()
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedSize, setSelectedSize] = useState(product.selectedSize || product.sizes[0])
+  const [isWishlisted, setIsWishlisted] = useState(false)
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
+        className={`h-5 w-5 ${
           i < Math.floor(rating) 
-            ? 'fill-orange-500 text-orange-500' 
+            ? 'fill-yellow-400 text-yellow-400' 
             : i < rating 
-            ? 'fill-orange-300 text-orange-500' 
+            ? 'fill-yellow-300 text-yellow-400' 
             : 'text-gray-300'
         }`}
       />
@@ -59,25 +61,34 @@ export function ProductDetailCard({ product }: ProductDetailCardProps) {
 
   const renderFirmnessScale = (level: number) => {
     return (
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm text-gray-600">Soft</span>
-        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700">Soft</span>
+          <span className="text-sm font-medium text-gray-700">Firm</span>
+        </div>
+        <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-orange-500 rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-300"
             style={{ width: `${level * 10}%` }}
           />
+          <div 
+            className="absolute top-0 w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg transform -translate-y-0.5 transition-all duration-300"
+            style={{ left: `calc(${level * 10}% - 8px)` }}
+          />
         </div>
-        <span className="text-sm text-gray-600">Firm</span>
+        <div className="text-center">
+          <span className="text-sm font-semibold text-blue-600">{product.firmness}</span>
+        </div>
       </div>
     )
   }
 
   const getFeatureIcon = (feature: string) => {
     const featureLower = feature.toLowerCase()
-    if (featureLower.includes('bamboo') || featureLower.includes('organic')) return <Leaf className="h-3 w-3" />
-    if (featureLower.includes('motion')) return <Zap className="h-3 w-3" />
-    if (featureLower.includes('foam') || featureLower.includes('certipur')) return <Shield className="h-3 w-3" />
-    return <Check className="h-3 w-3" />
+    if (featureLower.includes('bamboo') || featureLower.includes('organic')) return <Leaf className="h-4 w-4" />
+    if (featureLower.includes('motion') || featureLower.includes('isolation')) return <Zap className="h-4 w-4" />
+    if (featureLower.includes('foam') || featureLower.includes('certipur')) return <Shield className="h-4 w-4" />
+    return <Check className="h-4 w-4" />
   }
 
   const handleAddToCart = () => {
@@ -97,166 +108,343 @@ export function ProductDetailCard({ product }: ProductDetailCardProps) {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Product Images Section */}
-      <div className="relative">
-        {/* Main Product Image */}
-        <div className="relative w-full h-80 bg-gray-50">
-          <Image
-            src={product.images?.[selectedImage] || product.image || "/placeholder.svg"}
-            alt={product.name}
-            fill
-            className="object-cover"
-          />
-          
-          {/* Badges */}
-          <div className="absolute top-4 right-4 space-y-2">
-            <Badge className="bg-orange-500 text-white border-0 px-3 py-1 text-sm font-medium">
-              {product.badge}
-            </Badge>
-            <Badge className="bg-orange-500 text-white border-0 px-3 py-1 text-sm font-medium">
-              Save £{product.savings.toFixed(2)}
-            </Badge>
-          </div>
-        </div>
-
-        {/* Thumbnail Images */}
-        {product.images && product.images.length > 1 && (
-          <div className="flex gap-2 mt-4 px-4">
-            {product.images.map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedImage(index)}
-                className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                  selectedImage === index ? 'border-orange-500' : 'border-gray-200'
-                }`}
-              >
-                <Image
-                  src={image}
-                  alt={`${product.name} view ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Product Information */}
-      <div className="px-4 py-6 space-y-6">
-        {/* Brand and Product Name */}
-        <div className="relative">
-          <div className="text-sm text-gray-500 mb-1">{product.brand}</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">{product.name}</h1>
-          <p className="text-gray-900">{product.brand} Premium</p>
-          <p className="text-sm text-gray-600">Luxury Hybrid Mattress with Support</p>
-          
-          {/* Brand Logo */}
-          <div className="absolute top-0 right-0 w-8 h-8 bg-black rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-bold">{product.brand.substring(0, 2)}</span>
-          </div>
-        </div>
-
-        {/* Rating and Reviews */}
-        <div className="flex items-center gap-2">
-          <div className="flex">{renderStars(product.rating)}</div>
-          <span className="font-semibold text-gray-900">{product.rating}</span>
-          <span className="text-sm text-gray-500">Based on {product.reviewCount} reviews</span>
-        </div>
-
-        {/* Features */}
-        <div className="flex flex-wrap gap-2">
-          {product.features.map((feature, index) => (
-            <Badge 
-              key={index}
-              variant="outline" 
-              className="bg-white border-gray-200 text-gray-700 px-3 py-1 text-sm"
-            >
-              <span className="mr-1">{getFeatureIcon(feature)}</span>
-              {feature}
-            </Badge>
-          ))}
-        </div>
-
-        {/* Firmness Scale */}
-        {renderFirmnessScale(product.firmnessLevel || 7)}
-
-        {/* Pricing */}
-        <div className="space-y-2">
-          <div className="text-sm text-gray-500">Starting from</div>
-          <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-gray-900">£{product.currentPrice.toFixed(2)}</span>
-            <div className="flex flex-col">
-              <span className="text-gray-500 line-through">£{product.originalPrice.toFixed(2)}</span>
-              <span className="text-orange-600 font-medium">Save £{product.savings.toFixed(2)}</span>
-            </div>
-          </div>
-          {product.monthlyPrice && (
-            <p className="text-sm text-gray-900">Pay monthly from £{product.monthlyPrice}/mo. No fees.</p>
-          )}
-          <p className="text-xs text-gray-500">*Prices vary. Free UK delivery.</p>
-        </div>
-
-        {/* Delivery and Service */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-gray-900">Free Delivery</span>
-            </div>
-            <span className="text-sm text-gray-600">{product.freeDelivery}</span>
-          </div>
-          {product.setupService && (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-600" />
-                <span className="text-sm text-gray-900">Setup Service</span>
+      <div className="max-w-7xl mx-auto">
+        {/* Product Images Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <div className="space-y-6">
+            {/* Main Product Image */}
+            <div className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden shadow-lg">
+              <Image
+                src={product.images?.[selectedImage] || product.image || "/placeholder.svg"}
+                alt={product.name}
+                fill
+                className="object-cover"
+              />
+              
+              {/* Badges */}
+              <div className="absolute top-4 left-4 space-y-2">
+                {product.badge && (
+                  <Badge className="bg-orange-500 text-white border-0 px-4 py-2 text-sm font-semibold shadow-lg">
+                    {product.badge}
+                  </Badge>
+                )}
+                {product.savings > 0 && (
+                  <Badge className="bg-green-500 text-white border-0 px-4 py-2 text-sm font-semibold shadow-lg">
+                    Save ${product.savings.toFixed(2)}
+                  </Badge>
+                )}
               </div>
-              <span className="text-sm text-gray-600">+£{product.setupCost}</span>
+
+              {/* Wishlist and Share */}
+              <div className="absolute top-4 right-4 space-y-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  className={`w-10 h-10 rounded-full shadow-lg ${
+                    isWishlisted ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-white text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-10 h-10 rounded-full bg-white text-gray-600 hover:bg-gray-50 shadow-lg"
+                >
+                  <Share2 className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Certifications */}
-        <div className="flex flex-wrap gap-2">
-          {product.certifications.map((cert, index) => (
-            <Badge 
-              key={index}
-              variant="outline" 
-              className="bg-white border-gray-200 text-gray-700 px-3 py-1 text-sm"
-            >
-              {cert}
-            </Badge>
-          ))}
-        </div>
+            {/* Thumbnail Images */}
+            {product.images && product.images.length > 1 && (
+              <div className="flex gap-3">
+                {product.images.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 ${
+                      selectedImage === index ? 'border-blue-500 scale-105' : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <Image
+                      src={image}
+                      alt={`${product.name} view ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-        {/* Sizes */}
-        <div className="space-y-3">
-          <div className="text-sm font-medium text-gray-900">Sizes</div>
-          <div className="flex flex-wrap gap-2">
-            {product.sizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedSize === size
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+          {/* Product Information */}
+          <div className="space-y-8">
+            {/* Brand and Product Name */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg font-bold">{product.brand.substring(0, 2)}</span>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-blue-600">{product.brand}</div>
+                  <div className="text-sm text-gray-500">Premium Collection</div>
+                </div>
+              </div>
+              
+              <h1 className="text-4xl font-bold text-gray-900 leading-tight">{product.name}</h1>
+              <p className="text-xl text-gray-600">Luxury Hybrid Mattress with Advanced Support Technology</p>
+            </div>
+
+            {/* Rating and Reviews */}
+            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2">
+                <div className="flex">{renderStars(product.rating)}</div>
+                <span className="text-2xl font-bold text-gray-900">{product.rating}</span>
+              </div>
+              <div className="h-8 w-px bg-gray-300"></div>
+              <div className="text-gray-600">
+                <div className="font-semibold">{product.reviewCount} reviews</div>
+                <div className="text-sm">Verified buyers</div>
+              </div>
+            </div>
+
+            {/* Features */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Key Features</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {product.features.slice(0, 6).map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                    <span className="text-blue-600">{getFeatureIcon(feature)}</span>
+                    <span className="text-sm font-medium text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Firmness Scale */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Firmness Level</h3>
+              {renderFirmnessScale(product.firmnessLevel || 7)}
+            </div>
+
+            {/* Pricing */}
+            <div className="space-y-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+              <div className="text-sm text-blue-600 font-semibold">Starting from</div>
+              <div className="flex items-baseline gap-4">
+                <span className="text-5xl font-bold text-blue-900">${product.currentPrice.toFixed(2)}</span>
+                <div className="flex flex-col">
+                  <span className="text-2xl text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
+                  <span className="text-lg text-green-600 font-semibold">Save ${product.savings.toFixed(2)}</span>
+                </div>
+              </div>
+              {product.monthlyPrice && (
+                <div className="flex items-center gap-2">
+                  <span className="text-lg text-gray-900">or</span>
+                  <span className="text-xl font-bold text-blue-900">${product.monthlyPrice}/mo</span>
+                  <span className="text-sm text-gray-600">with 0% APR financing</span>
+                </div>
+              )}
+              <div className="text-sm text-gray-600">*Prices vary by size. Free delivery available.</div>
+            </div>
+
+            {/* Delivery and Service */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
+                <div className="flex items-center gap-3">
+                  <Truck className="h-6 w-6 text-green-600" />
+                  <div>
+                    <div className="font-semibold text-green-900">Free Delivery</div>
+                    <div className="text-sm text-green-700">{product.freeDelivery}</div>
+                  </div>
+                </div>
+                <Badge className="bg-green-500 text-white">FREE</Badge>
+              </div>
+              
+              {product.setupService && (
+                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-200">
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                    <div>
+                      <div className="font-semibold text-blue-900">Setup Service</div>
+                      <div className="text-sm text-blue-700">Professional installation & old mattress removal</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-blue-900">+${product.setupCost}</div>
+                    <div className="text-sm text-blue-600">Optional</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sizes */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Select Size</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {product.sizes.map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`p-4 rounded-xl text-center transition-all duration-200 ${
+                      selectedSize === size
+                        ? 'bg-blue-600 text-white shadow-lg scale-105'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
+                    }`}
+                  >
+                    <div className="font-semibold">{size}</div>
+                    <div className="text-sm opacity-80">
+                      {size === 'Twin' && '38" x 74"'}
+                      {size === 'Twin XL' && '38" x 80"'}
+                      {size === 'Full' && '54" x 74"'}
+                      {size === 'Queen' && '60" x 80"'}
+                      {size === 'King' && '76" x 80"'}
+                      {size === 'Split King' && '76" x 80"'}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="space-y-4">
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-xl rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                onClick={handleAddToCart}
               >
-                {size}
-              </button>
-            ))}
+                Add to Cart - ${product.currentPrice.toFixed(2)}
+                <ArrowRight className="ml-3 h-6 w-6" />
+              </Button>
+              
+              <Button 
+                variant="outline"
+                className="w-full border-2 border-gray-300 text-gray-700 font-semibold py-4 text-lg rounded-xl hover:border-gray-400 hover:bg-gray-50"
+              >
+                Find in Store
+                <MapPin className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Call to Action */}
-        <Button 
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 text-lg rounded-lg"
-          onClick={handleAddToCart}
-        >
-          Buy Now <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+        {/* Additional Information */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          {/* Certifications */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Certifications</h3>
+            <div className="space-y-3">
+              {product.certifications.map((cert, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Award className="h-5 w-5 text-blue-600" />
+                  <span className="font-medium text-gray-700">{cert}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Why Choose Us</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                <ShieldCheck className="h-5 w-5 text-green-600" />
+                <div>
+                  <div className="font-semibold text-green-900">100-Day Trial</div>
+                  <div className="text-sm text-green-700">Try risk-free</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                <TruckIcon className="h-5 w-5 text-blue-600" />
+                <div>
+                  <div className="font-semibold text-blue-900">Free Delivery</div>
+                  <div className="text-sm text-blue-700">Oklahoma & surrounding areas</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                <Shield className="h-5 w-5 text-purple-600" />
+                <div>
+                  <div className="font-semibold text-purple-900">10-Year Warranty</div>
+                  <div className="text-sm text-purple-700">Full coverage included</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Customer Support */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Need Help?</h3>
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <Phone className="h-5 w-5 text-blue-600" />
+                  <span className="font-semibold text-blue-900">Call Us</span>
+                </div>
+                <div className="text-blue-700">(405) 564-0561</div>
+                <div className="text-sm text-blue-600">Mon-Sat: 9AM-8PM</div>
+              </div>
+              
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="h-5 w-5 text-green-600" />
+                  <span className="font-semibold text-green-900">Visit Store</span>
+                </div>
+                <div className="text-green-700">6 locations in Oklahoma</div>
+                <div className="text-sm text-green-600">Test mattresses in person</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">Customer Reviews</h3>
+            <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+              View All {product.reviewCount} Reviews
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Sample Review */}
+            <div className="p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="flex items-center gap-2 mb-3">
+                {renderStars(5)}
+                <span className="text-sm text-gray-600">5.0</span>
+              </div>
+              <p className="text-gray-700 mb-4">"Amazing mattress! The comfort level is perfect and delivery was quick. Highly recommend!"</p>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-900">- Sarah M.</span>
+                <span className="text-sm text-gray-500">Verified Buyer</span>
+              </div>
+            </div>
+            
+            <div className="p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="flex items-center gap-2 mb-3">
+                {renderStars(5)}
+                <span className="text-sm text-gray-600">5.0</span>
+              </div>
+              <p className="text-gray-700 mb-4">"Best sleep I've ever had. The firmness is exactly what I needed for my back."</p>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-900">- Mike R.</span>
+                <span className="text-sm text-gray-500">Verified Buyer</span>
+              </div>
+            </div>
+            
+            <div className="p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="flex items-center gap-2 mb-3">
+                {renderStars(5)}
+                <span className="text-sm text-gray-600">5.0</span>
+              </div>
+              <p className="text-gray-700 mb-4">"Excellent quality and the 100-day trial gave me confidence in my purchase."</p>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-900">- Lisa K.</span>
+                <span className="text-sm text-gray-500">Verified Buyer</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

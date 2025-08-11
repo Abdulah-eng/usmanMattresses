@@ -1,173 +1,51 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from 'lucide-react'
 
 export default function MattressGuidePage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Mattress Buying Guide</h1>
-            <p className="text-xl text-gray-700">
-              Everything you need to know to choose the perfect mattress
-            </p>
-          </div>
-
-          {/* Mattress Types */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Types of Mattresses</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Memory Foam</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Excellent pressure relief</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Motion isolation</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Conforms to body shape</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Innerspring</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Traditional bounce and support</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Good airflow and cooling</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Wide range of firmness levels</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Hybrid</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Combines foam and springs</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Balanced comfort and support</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Good for all sleep positions</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Latex</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Natural and eco-friendly</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Responsive and bouncy</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5" />
-                      <span className="text-sm">Naturally cooling</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Firmness Guide */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Firmness Guide</h2>
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                    <div>
-                      <h3 className="font-semibold">Soft (1-3)</h3>
-                      <p className="text-sm text-gray-600">Best for side sleepers and those who prefer a plush feel</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                    <div>
-                      <h3 className="font-semibold">Medium (4-6)</h3>
-                      <p className="text-sm text-gray-600">Great for combination sleepers and couples</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                    <div>
-                      <h3 className="font-semibold">Firm (7-10)</h3>
-                      <p className="text-sm text-gray-600">Ideal for back and stomach sleepers</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Size Guide */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Size Guide</h2>
-            <Card>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">Twin (38" x 75")</h3>
-                    <p className="text-sm text-gray-600">Perfect for children and single adults</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">Full (54" x 75")</h3>
-                    <p className="text-sm text-gray-600">Good for single adults with more space</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">Queen (60" x 80")</h3>
-                    <p className="text-sm text-gray-600">Most popular size for couples</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">King (76" x 80")</h3>
-                    <p className="text-sm text-gray-600">Maximum space for couples</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Mattress Buying Guide</h1>
+          <p className="text-xl text-gray-700">Everything you need to know to choose the perfect mattress</p>
         </div>
-      </main>
-      <Footer />
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-lg shadow-sm border p-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">How to Choose the Right Mattress</h2>
+            <p className="text-gray-600 mb-6">
+              Choosing the right mattress is one of the most important decisions you'll make for your sleep health. 
+              Our comprehensive guide will help you understand the different types, firmness levels, and features 
+              to consider when making your selection.
+            </p>
+            
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Mattress Types</h3>
+            <ul className="space-y-2 text-gray-600 mb-6">
+              <li>• <strong>Memory Foam:</strong> Contours to your body, excellent pressure relief</li>
+              <li>• <strong>Innerspring:</strong> Traditional support with good airflow</li>
+              <li>• <strong>Hybrid:</strong> Combines the best of foam and spring technology</li>
+              <li>• <strong>Latex:</strong> Natural, durable, and responsive</li>
+            </ul>
+            
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Firmness Levels</h3>
+            <p className="text-gray-600 mb-4">
+              Firmness is a personal preference that depends on your sleep position, body weight, and comfort needs.
+            </p>
+            <ul className="space-y-2 text-gray-600 mb-6">
+              <li>• <strong>Soft (3-4):</strong> Plush feel, great for side sleepers</li>
+              <li>• <strong>Medium (5-6):</strong> Balanced support, works for most sleepers</li>
+              <li>• <strong>Firm (7-8):</strong> Solid support, ideal for back and stomach sleepers</li>
+            </ul>
+            
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Sleep Position Considerations</h3>
+            <ul className="space-y-2 text-gray-600 mb-6">
+              <li>• <strong>Side Sleepers:</strong> Look for medium to soft mattresses with good pressure relief</li>
+              <li>• <strong>Back Sleepers:</strong> Choose medium to firm mattresses for proper spinal alignment</li>
+              <li>• <strong>Stomach Sleepers:</strong> Opt for firm mattresses to prevent sinking</li>
+              <li>• <strong>Combination Sleepers:</strong> Medium firmness usually works best</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

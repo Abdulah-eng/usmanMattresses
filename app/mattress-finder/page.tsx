@@ -1,198 +1,126 @@
 "use client"
 
 import { useState } from "react"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
 
 export default function MattressFinderPage() {
-  const [currentStep, setCurrentStep] = useState(1)
+  const [step, setStep] = useState(1)
   const [answers, setAnswers] = useState<Record<string, string>>({})
-  const totalSteps = 6
 
   const questions = [
     {
-      id: 'sleep_position',
-      title: 'What is your primary sleep position?',
-      options: [
-        { value: 'side', label: 'Side sleeper' },
-        { value: 'back', label: 'Back sleeper' },
-        { value: 'stomach', label: 'Stomach sleeper' },
-        { value: 'combination', label: 'Combination sleeper' }
-      ]
+      id: "sleep-position",
+      question: "What's your primary sleep position?",
+      options: ["Side", "Back", "Stomach", "Combination"]
     },
     {
-      id: 'firmness',
-      title: 'What firmness level do you prefer?',
-      options: [
-        { value: 'soft', label: 'Soft (1-3)' },
-        { value: 'medium', label: 'Medium (4-6)' },
-        { value: 'firm', label: 'Firm (7-10)' },
-        { value: 'unsure', label: 'Not sure' }
-      ]
+      id: "firmness",
+      question: "What firmness level do you prefer?",
+      options: ["Soft", "Medium", "Firm", "Not sure"]
     },
     {
-      id: 'temperature',
-      title: 'Do you sleep hot or cold?',
-      options: [
-        { value: 'hot', label: 'I sleep hot' },
-        { value: 'cold', label: 'I sleep cold' },
-        { value: 'neutral', label: 'I sleep at a comfortable temperature' }
-      ]
-    },
-    {
-      id: 'partner',
-      title: 'Do you share your bed?',
-      options: [
-        { value: 'yes', label: 'Yes, I share my bed' },
-        { value: 'no', label: 'No, I sleep alone' }
-      ]
-    },
-    {
-      id: 'budget',
-      title: 'What is your budget range?',
-      options: [
-        { value: 'under_500', label: 'Under $500' },
-        { value: '500_1000', label: '$500 - $1,000' },
-        { value: '1000_2000', label: '$1,000 - $2,000' },
-        { value: 'over_2000', label: 'Over $2,000' }
-      ]
-    },
-    {
-      id: 'size',
-      title: 'What size mattress do you need?',
-      options: [
-        { value: 'twin', label: 'Twin' },
-        { value: 'full', label: 'Full' },
-        { value: 'queen', label: 'Queen' },
-        { value: 'king', label: 'King' },
-        { value: 'cal_king', label: 'California King' }
-      ]
+      id: "budget",
+      question: "What's your budget range?",
+      options: ["Under $500", "$500-$1000", "$1000-$2000", "$2000+"]
     }
   ]
 
-  const handleAnswer = (questionId: string, value: string) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }))
+  const handleAnswer = (questionId: string, answer: string) => {
+    setAnswers(prev => ({ ...prev, [questionId]: answer }))
   }
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
-    }
-  }
+  const nextStep = () => setStep(step + 1)
+  const prevStep = () => setStep(step - 1)
 
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
-  }
-
-  const getRecommendations = () => {
-    // Simple recommendation logic based on answers
-    const recommendations = []
+  const getRecommendation = () => {
+    const sleepPosition = answers["sleep-position"]
+    const firmness = answers["firmness"]
     
-    if (answers.sleep_position === 'side' && answers.firmness === 'soft') {
-      recommendations.push('Memory Foam Mattress')
+    if (sleepPosition === "Side") {
+      return "Memory Foam Mattress - Medium to Soft firmness for pressure relief"
+    } else if (sleepPosition === "Back") {
+      return "Hybrid Mattress - Medium to Firm firmness for spinal alignment"
+    } else if (sleepPosition === "Stomach") {
+      return "Firm Mattress - Firm support to prevent sinking"
+    } else {
+      return "Hybrid Mattress - Medium firmness for versatility"
     }
-    if (answers.temperature === 'hot') {
-      recommendations.push('Cooling Gel Mattress')
-    }
-    if (answers.partner === 'yes') {
-      recommendations.push('Hybrid Mattress with Motion Isolation')
-    }
-    
-    return recommendations.length > 0 ? recommendations : ['Memory Foam Mattress', 'Hybrid Mattress']
   }
-
-  const progress = (currentStep / totalSteps) * 100
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Mattress Finder Quiz</h1>
+          <p className="text-xl text-gray-700">Answer a few questions to find your perfect mattress</p>
+        </div>
+        
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Mattress Finder Quiz</h1>
-            <p className="text-lg text-gray-700">
-              Answer a few questions to find your perfect mattress match
-            </p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <div className="space-y-4">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Question {currentStep} of {totalSteps}</span>
-                  <span>{Math.round(progress)}% Complete</span>
-                </div>
-                <Progress value={progress} className="w-full" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              {currentStep <= totalSteps ? (
+          {step <= questions.length ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Question {step} of {questions.length}</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-6">
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    {questions[currentStep - 1]?.title}
-                  </h2>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {questions[step - 1].question}
+                  </h3>
                   
                   <RadioGroup
-                    value={answers[questions[currentStep - 1]?.id] || ''}
-                    onValueChange={(value) => handleAnswer(questions[currentStep - 1]?.id, value)}
+                    value={answers[questions[step - 1].id] || ""}
+                    onValueChange={(value) => handleAnswer(questions[step - 1].id, value)}
                   >
-                    {questions[currentStep - 1]?.options.map((option) => (
-                      <div key={option.value} className="flex items-center space-x-2">
-                        <RadioGroupItem value={option.value} id={option.value} />
-                        <Label htmlFor={option.value} className="cursor-pointer">
-                          {option.label}
-                        </Label>
+                    {questions[step - 1].options.map((option) => (
+                      <div key={option} className="flex items-center space-x-2">
+                        <RadioGroupItem value={option} id={option} />
+                        <Label htmlFor={option} className="text-lg">{option}</Label>
                       </div>
                     ))}
                   </RadioGroup>
-
-                  <div className="flex justify-between pt-6">
-                    <Button
-                      variant="outline"
-                      onClick={prevStep}
-                      disabled={currentStep === 1}
-                    >
-                      Previous
-                    </Button>
-                    <Button
+                  
+                  <div className="flex gap-4 pt-4">
+                    {step > 1 && (
+                      <Button variant="outline" onClick={prevStep}>
+                        Previous
+                      </Button>
+                    )}
+                    <Button 
                       onClick={nextStep}
-                      disabled={!answers[questions[currentStep - 1]?.id]}
-                      className="bg-blue-900 hover:bg-blue-800"
+                      disabled={!answers[questions[step - 1].id]}
+                      className="flex-1"
                     >
-                      {currentStep === totalSteps ? 'Get Results' : 'Next'}
+                      {step === questions.length ? "Get Results" : "Next"}
                     </Button>
                   </div>
                 </div>
-              ) : (
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Mattress Recommendation</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="text-center space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Your Recommended Mattresses</h2>
-                  <div className="space-y-4">
-                    {getRecommendations().map((recommendation, index) => (
-                      <Card key={index} className="border-blue-200">
-                        <CardContent className="p-4">
-                          <h3 className="font-semibold text-lg text-blue-900">{recommendation}</h3>
-                          <p className="text-gray-600">Perfect match based on your preferences</p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                  <Button className="bg-blue-900 hover:bg-blue-800">
-                    Shop Recommended Mattresses
+                  <h3 className="text-2xl font-semibold text-gray-900">
+                    {getRecommendation()}
+                  </h3>
+                  <p className="text-gray-600">
+                    Based on your preferences, we recommend this type of mattress for optimal comfort and support.
+                  </p>
+                  <Button onClick={() => setStep(1)} variant="outline">
+                    Take Quiz Again
                   </Button>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
-      </main>
-      <Footer />
+      </div>
     </div>
   )
 }

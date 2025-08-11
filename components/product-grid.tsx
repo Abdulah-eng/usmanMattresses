@@ -170,7 +170,7 @@ export function ProductGrid({ category, filters, sortBy }: ProductGridProps) {
       {/* Products Grid */}
       {error && <div className="text-sm text-red-600 mb-4">{error}</div>}
       {loading && <div className="text-sm text-gray-600 mb-4">Loading products…</div>}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {paginatedProducts.map((product) => (
           <div key={product.id} className="h-full">
             <ProductCard product={product} />

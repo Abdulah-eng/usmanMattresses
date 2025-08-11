@@ -3,6 +3,8 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import { CartProvider } from "@/lib/cart-context"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export const metadata: Metadata = {
   title: 'v0 App',
@@ -28,7 +30,9 @@ html {
       </head>
       <body>
         <CartProvider>
+          <Header />
           {children}
+          <Footer />
         </CartProvider>
       </body>
     </html>
