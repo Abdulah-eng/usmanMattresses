@@ -9,14 +9,20 @@ export default function CartPage() {
   const { state, dispatch } = useCart()
 
   const removeItem = (id: number) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: id })
+    dispatch({
+      type: "REMOVE_ITEM",
+      payload: id,
+    })
   }
 
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity <= 0) {
       removeItem(id)
     } else {
-      dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } })
+      dispatch({
+        type: "UPDATE_QUANTITY",
+        payload: { id, quantity },
+      })
     }
   }
 
@@ -43,7 +49,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
-        
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
@@ -77,9 +83,13 @@ export default function CartPage() {
                       </Button>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">£{((item.currentPrice || 0) * (item.quantity || 1)).toFixed(2)}</p>
+                      <p className="font-semibold text-gray-900">
+                        £{((item.currentPrice || 0) * (item.quantity || 1)).toFixed(2)}
+                      </p>
                       {item.originalPrice && item.originalPrice > item.currentPrice && (
-                        <p className="text-sm text-gray-500 line-through">£{((item.originalPrice || 0) * (item.quantity || 1)).toFixed(2)}</p>
+                        <p className="text-sm text-gray-500 line-through">
+                          £{((item.originalPrice || 0) * (item.quantity || 1)).toFixed(2)}
+                        </p>
                       )}
                     </div>
                     <Button
@@ -103,7 +113,7 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>£{state.subtotal.toFixed(2)}</span>
+                  <span>£{(state.total || 0).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
@@ -112,7 +122,7 @@ export default function CartPage() {
                 <div className="border-t pt-3">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>£{state.total.toFixed(2)}</span>
+                    <span>£{(state.total || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>

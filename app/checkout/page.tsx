@@ -25,7 +25,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
-        
+
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Checkout Form */}
           <div>
@@ -60,7 +60,7 @@ export default function CheckoutPage() {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>£{state.subtotal.toFixed(2)}</span>
+                    <span>£{(state.total || 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
@@ -69,7 +69,7 @@ export default function CheckoutPage() {
                   <div className="border-t pt-3">
                     <div className="flex justify-between font-semibold text-lg">
                       <span>Total</span>
-                      <span>£{state.total.toFixed(2)}</span>
+                      <span>£{(state.total || 0).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
