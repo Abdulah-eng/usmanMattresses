@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useMounted } from "@/hooks/use-mobile"
 import Link from "next/link"
-import { Menu, Search, ShoppingCart, Heart, X, Phone, MapPin, Truck, ChevronDown } from 'lucide-react'
+import { Menu, Search, ShoppingCart, Heart, X, Phone, MapPin, Truck, ChevronDown, Star } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/lib/cart-context"
@@ -54,23 +54,41 @@ export function Header() {
   return (
     <header className="bg-white shadow-sm relative z-50">
       {/* Sales Banner */}
-      <div className="bg-red-600 text-white">
+      <div className="bg-[#dc2626] text-white"> {/* Changed to dark red #dc2626 */}
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center py-2 text-sm font-medium">
-            <span className="mr-4">UP TO 50% OFF - MID WEEK SAVINGS</span>
-            <span className="flex items-center gap-1">
-              <span>ENDS IN</span>
-              {mounted ? (
-                <>
-                  <span className="font-bold">{timeLeft.days.toString().padStart(2, '0')} DAYS</span>
-                  <span className="font-bold">{timeLeft.hours.toString().padStart(2, '0')} HOURS</span>
-                  <span className="font-bold">{timeLeft.minutes.toString().padStart(2, '0')} MINS</span>
-                  <span className="font-bold">{timeLeft.seconds.toString().padStart(2, '0')} SECS</span>
-                </>
-              ) : (
-                <span className="font-bold">01 DAYS 04 HOURS 48 MINS 00 SECS</span>
-              )}
-            </span>
+            <span className="mr-4">UP TO 50% OFF - MID WEEK SAVINGS | ENDS IN</span> {/* Original text */}
+            {mounted ? (
+              <div className="flex items-center space-x-2">
+                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                </div>
+                <span className="text-white font-medium">HOURS</span> {/* Text-white */}
+                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                </div>
+                <span className="text-white font-medium">MINS</span> {/* Text-white */}
+                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                </div>
+                <span className="text-white font-medium">SECS</span> {/* Text-white */}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black">01</span>
+                </div>
+                <span className="text-white font-medium">DAYS</span>
+                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black">04</span>
+                </div>
+                <span className="text-white font-medium">HOURS</span>
+                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black">48</span>
+                </div>
+                <span className="text-white font-medium">MINS</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -88,7 +106,7 @@ export function Header() {
               />
               <Button 
                 size="sm" 
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-900 hover:bg-blue-800 rounded-full h-8 w-8 p-0"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-800 hover:bg-blue-900 rounded-full h-8 w-8 p-0"
               >
                 <Search className="h-4 w-4" />
               </Button>
@@ -97,7 +115,7 @@ export function Header() {
 
           {/* Logo - Center */}
           <div className="flex-1 flex justify-center">
-            <Link href="/" className="text-3xl font-bold text-blue-900 font-serif">
+            <Link href="/" className="text-3xl font-bold text-blue-800 font-serif">
               MattressKing™
             </Link>
           </div>
@@ -112,7 +130,7 @@ export function Header() {
             
             <div className="flex items-center gap-4">
               <Link href="/cart">
-                <Button variant="ghost" size="sm" className="relative text-blue-900 hover:text-blue-700">
+                <Button variant="ghost" size="sm" className="relative text-blue-800 hover:text-blue-700">
                   <ShoppingCart className="h-5 w-5 mr-1" />
                   <div className="flex flex-col items-start">
                     <span className="text-xs">BASKET</span>
@@ -141,7 +159,7 @@ export function Header() {
       </div>
 
       {/* Navigation Bar - Full Width */}
-      <div className="bg-blue-900 text-white w-full">
+      <div className="bg-blue-800 text-white w-full">
         <div className="px-4">
           <nav className="hidden md:flex items-center justify-between py-3">
             <div className="flex items-center space-x-8">
@@ -195,6 +213,21 @@ export function Header() {
         </div>
       </div>
 
+      {/* Trust Banner */}
+      <div className="bg-orange-50 py-3 w-full">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between text-sm text-blue-800">
+            <div className="flex items-center">
+              <Star className="h-4 w-4 text-yellow-500 mr-1" />
+              <span>Trustpilot ★★★★ Rated Excellent</span>
+            </div>
+            <div>Buy today, delivered tomorrow</div>
+            <div>Klarna. Buy now & pay later available</div>
+            <div>5 Year manufacturer's guarantee</div>
+          </div>
+        </div>
+      </div>
+
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden py-4 border-t border-gray-200 bg-white">
@@ -208,15 +241,14 @@ export function Header() {
                 />
               </div>
               <div className="flex flex-col space-y-2 text-sm">
-                <Link href="/track-order" className="text-blue-900 hover:text-blue-700">Track Order</Link>
-                <Link href="/account" className="text-blue-900 hover:text-blue-700">My Account</Link>
-                <Link href="/signin" className="text-blue-900 hover:text-blue-700">Sign In / Register</Link>
+                <Link href="/contact" className="text-blue-800 hover:text-blue-700">Contact Us</Link>
+                <Link href="/about" className="text-blue-800 hover:text-blue-700">About</Link>
               </div>
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="font-medium text-gray-900 hover:text-blue-900"
+                  className="font-medium text-gray-900 hover:text-blue-800"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -224,21 +256,21 @@ export function Header() {
               ))}
               <Link
                 href="/sale"
-                className="font-medium text-gray-700 hover:text-blue-900"
+                className="font-medium text-gray-700 hover:text-blue-800"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 🏷️ Sale
               </Link>
               <Link
                 href="/mattress-guide"
-                className="font-medium text-gray-700 hover:text-blue-900"
+                className="font-medium text-gray-700 hover:text-blue-800"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Mattress Guide
               </Link>
               <Link
                 href="/mattress-finder"
-                className="font-medium text-gray-700 hover:text-blue-900"
+                className="font-medium text-gray-700 hover:text-blue-800"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 🧭 Mattress Finder Quiz

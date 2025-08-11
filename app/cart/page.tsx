@@ -2,7 +2,8 @@
 
 import { useCart } from "@/lib/cart-context"
 import { Button } from "@/components/ui/button"
-import { Trash2, ShoppingCart } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Trash2, ShoppingCart, Shield, Truck, Clock, Star } from "lucide-react"
 import Link from "next/link"
 
 export default function CartPage() {
@@ -46,8 +47,8 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -132,6 +133,50 @@ export default function CartPage() {
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Your MattressKing Guarantee Banner */}
+      <div className="bg-blue-800 text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-8">
+            Your <span className="text-orange-400">MattressKing</span> Guarantee
+          </h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="flex flex-col items-center">
+              <Shield className="h-12 w-12 text-orange-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">5-Year Manufacturer Guarantee</h3>
+            </div>
+            <div className="flex flex-col items-center">
+              <Truck className="h-12 w-12 text-orange-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Speedy Delivery</h3>
+            </div>
+            <div className="flex flex-col items-center">
+              <Clock className="h-12 w-12 text-orange-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">14 Day No-Hassle Returns</h3>
+            </div>
+            <div className="flex flex-col items-center">
+              <Star className="h-12 w-12 text-orange-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Rated <span className="text-orange-400">Excellent</span> on Trustpilot</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Newsletter Signup */}
+      <div className="bg-blue-800 text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold mb-4">Sign up to receive exclusive offers direct to your inbox!</h2>
+          <p className="text-lg mb-6">Get your dose of MattressKing News, offers, inspo and more.</p>
+          <div className="flex max-w-md mx-auto space-x-2">
+            <Input 
+              placeholder="Enter email" 
+              className="flex-1 text-gray-900"
+            />
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+              Subscribe
+            </Button>
           </div>
         </div>
       </div>
