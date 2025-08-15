@@ -52,41 +52,41 @@ export function Header() {
   ]
 
   return (
-    <header className="bg-white shadow-sm relative z-50">
+    <header className="bg-white shadow-sm relative z-50 overflow-hidden">
       {/* Sales Banner */}
-      <div className="bg-[#dc2626] text-white"> {/* Changed to dark red #dc2626 */}
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center py-2 text-sm font-medium">
-            <span className="mr-4">UP TO 50% OFF - MID WEEK SAVINGS | ENDS IN</span> {/* Original text */}
+      <div className="bg-[#dc2626] text-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center py-2 text-xs sm:text-sm font-medium gap-2 sm:gap-4">
+            <span className="text-center sm:text-left break-words">UP TO 50% OFF - MID WEEK SAVINGS | ENDS IN</span>
             {mounted ? (
-              <div className="flex items-center space-x-2">
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black">{timeLeft.hours.toString().padStart(2, '0')}</span>
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black text-xs sm:text-sm">{timeLeft.hours.toString().padStart(2, '0')}</span>
                 </div>
-                <span className="text-white font-medium">HOURS</span> {/* Text-white */}
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                <span className="text-white font-medium text-xs sm:text-sm">HOURS</span>
+                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black text-xs sm:text-sm">{timeLeft.minutes.toString().padStart(2, '0')}</span>
                 </div>
-                <span className="text-white font-medium">MINS</span> {/* Text-white */}
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                <span className="text-white font-medium text-xs sm:text-sm">MINS</span>
+                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black text-xs sm:text-sm">{timeLeft.seconds.toString().padStart(2, '0')}</span>
                 </div>
-                <span className="text-white font-medium">SECS</span> {/* Text-white */}
+                <span className="text-white font-medium text-xs sm:text-sm">SECS</span>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black">01</span>
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black text-xs sm:text-sm">01</span>
                 </div>
-                <span className="text-white font-medium">DAYS</span>
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black">04</span>
+                <span className="text-white font-medium text-xs sm:text-sm">DAYS</span>
+                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black text-xs sm:text-sm">04</span>
                 </div>
-                <span className="text-white font-medium">HOURS</span>
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black">48</span>
+                <span className="text-white font-medium text-xs sm:text-sm">HOURS</span>
+                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
+                  <span className="font-bold text-black text-xs sm:text-sm">48</span>
                 </div>
-                <span className="text-white font-medium">MINS</span>
+                <span className="text-white font-medium text-xs sm:text-sm">MINS</span>
               </div>
             )}
           </div>
@@ -94,8 +94,8 @@ export function Header() {
       </div>
 
       {/* Main Header */}
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-4">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between py-4 gap-4 sm:gap-0">
           {/* Search Bar - Left */}
           <div className="hidden md:flex items-center flex-1 max-w-md">
             <div className="relative w-full">
@@ -114,26 +114,29 @@ export function Header() {
           </div>
 
           {/* Logo - Center */}
-          <div className="flex-1 flex justify-center">
-            <Link href="/" className="text-3xl font-bold text-blue-800 font-serif">
+          <div className="flex-1 flex justify-center order-1 sm:order-2">
+            <Link href="/" className="text-2xl sm:text-3xl font-bold text-blue-800 font-serif text-center">
               MattressKing™
             </Link>
           </div>
 
           {/* Account/Basket - Right */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6 order-2 sm:order-3">
             <div className="hidden md:flex flex-col items-end text-sm">
-              <Link href="/track-order" className="text-blue-900 hover:text-blue-700">Track Order</Link>
-              <Link href="/account" className="text-blue-900 hover:text-blue-700">My Account</Link>
-              <Link href="/signin" className="text-blue-900 hover:text-blue-700">Sign In / Register</Link>
+              <Link href="/track-order" className="text-blue-900 hover:text-blue-700 break-words">Track Order</Link>
+              <Link href="/account" className="text-blue-900 hover:text-blue-700 break-words">My Account</Link>
+              <Link href="/signin" className="text-blue-900 hover:text-blue-700 break-words">Sign In / Register</Link>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link href="/cart">
                 <Button variant="ghost" size="sm" className="relative text-blue-800 hover:text-blue-700">
                   <ShoppingCart className="h-5 w-5 mr-1" />
-                  <div className="flex flex-col items-start">
+                  <div className="hidden sm:flex flex-col items-start">
                     <span className="text-xs">BASKET</span>
+                    <span className="font-medium">£{state.total.toFixed(2)}</span>
+                  </div>
+                  <div className="sm:hidden">
                     <span className="font-medium">£{state.total.toFixed(2)}</span>
                   </div>
                   {state.itemCount > 0 && (
@@ -159,10 +162,10 @@ export function Header() {
       </div>
 
       {/* Navigation Bar - Full Width */}
-      <div className="bg-blue-800 text-white w-full">
+      <div className="bg-blue-800 text-white w-full overflow-hidden">
         <div className="px-4">
           <nav className="hidden md:flex items-center justify-between py-3">
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-4 lg:space-x-8 min-w-0">
               {navigationItems.map((item) => (
                 <div
                   key={item.name}
@@ -172,25 +175,25 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className="flex items-center text-white hover:text-gray-200 font-medium py-2"
+                    className="flex items-center text-white hover:text-gray-200 font-medium py-2 text-sm lg:text-base"
                   >
-                    {item.name}
-                    <ChevronDown className="ml-1 h-4 w-4" />
+                    <span className="break-words">{item.name}</span>
+                    <ChevronDown className="ml-1 h-4 w-4 flex-shrink-0" />
                   </Link>
                 </div>
               ))}
             </div>
             
-            <div className="flex items-center space-x-8">
-              <Link href="/sale" className="text-white hover:text-gray-200 font-medium py-2 flex items-center">
+            <div className="flex items-center space-x-4 lg:space-x-8 min-w-0">
+              <Link href="/sale" className="text-white hover:text-gray-200 font-medium py-2 flex items-center text-sm lg:text-base">
                 🏷️ Sale
               </Link>
               
-              <Link href="/mattress-guide" className="text-white hover:text-gray-200 font-medium py-2">
+              <Link href="/mattress-guide" className="text-white hover:text-gray-200 font-medium py-2 text-sm lg:text-base break-words">
                 Mattress Guide
               </Link>
               
-              <Link href="/mattress-finder" className="text-white hover:text-gray-200 font-medium py-2 flex items-center">
+              <Link href="/mattress-finder" className="text-white hover:text-gray-200 font-medium py-2 flex items-center text-sm lg:text-base break-words">
                 🧭 Mattress Finder Quiz
               </Link>
             </div>
@@ -214,16 +217,16 @@ export function Header() {
       </div>
 
       {/* Trust Banner */}
-      <div className="bg-orange-50 py-3 w-full">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between text-sm text-blue-800">
-            <div className="flex items-center">
-              <Star className="h-4 w-4 text-yellow-500 mr-1" />
-              <span>Trustpilot ★★★★ Rated Excellent</span>
+      <div className="bg-orange-50 py-3 w-full overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm text-blue-800 gap-2 sm:gap-4">
+            <div className="flex items-center justify-center sm:justify-start min-w-0">
+              <Star className="h-4 w-4 text-yellow-500 mr-1 flex-shrink-0" />
+              <span className="break-words">Trustpilot ★★★★ Rated Excellent</span>
             </div>
-            <div>Buy today, delivered tomorrow</div>
-            <div>Klarna. Buy now & pay later available</div>
-            <div>5 Year manufacturer's guarantee</div>
+            <div className="text-center sm:text-left break-words">Buy today, delivered tomorrow</div>
+            <div className="text-center sm:text-left break-words">Klarna. Buy now & pay later available</div>
+            <div className="text-center sm:text-left break-words">5 Year manufacturer's guarantee</div>
           </div>
         </div>
       </div>
@@ -231,7 +234,7 @@ export function Header() {
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden py-4 border-t border-gray-200 bg-white">
-          <div className="container mx-auto px-4">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="flex flex-col space-y-4">
               <div className="mb-4">
                 <Input
@@ -241,14 +244,14 @@ export function Header() {
                 />
               </div>
               <div className="flex flex-col space-y-2 text-sm">
-                <Link href="/contact" className="text-blue-800 hover:text-blue-700">Contact Us</Link>
-                <Link href="/about" className="text-blue-800 hover:text-blue-700">About</Link>
+                <Link href="/contact" className="text-blue-800 hover:text-blue-700 break-words">Contact Us</Link>
+                <Link href="/about" className="text-blue-800 hover:text-blue-700 break-words">About</Link>
               </div>
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="font-medium text-gray-900 hover:text-blue-800"
+                  className="font-medium text-gray-900 hover:text-blue-800 break-words"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -256,21 +259,21 @@ export function Header() {
               ))}
               <Link
                 href="/sale"
-                className="font-medium text-gray-700 hover:text-blue-800"
+                className="font-medium text-gray-700 hover:text-blue-800 break-words"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 🏷️ Sale
               </Link>
               <Link
                 href="/mattress-guide"
-                className="font-medium text-gray-700 hover:text-blue-800"
+                className="font-medium text-gray-700 hover:text-blue-800 break-words"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Mattress Guide
               </Link>
               <Link
                 href="/mattress-finder"
-                className="font-medium text-gray-700 hover:text-blue-800"
+                className="font-medium text-gray-700 hover:text-blue-800 break-words"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 🧭 Mattress Finder Quiz

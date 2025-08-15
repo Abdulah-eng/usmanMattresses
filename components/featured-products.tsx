@@ -1,3 +1,5 @@
+"use client"
+
 import { ProductCard } from "@/components/product-card"
 
 export function FeaturedProducts() {

@@ -73,7 +73,7 @@ export function getProductsByCategory(category: string): ProductRecord[] {
         'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&h=600&fit=crop',
         'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop',
         'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop',
       ],
       category: 'mattresses',
       type: 'Memory Foam',
