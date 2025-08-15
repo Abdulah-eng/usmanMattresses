@@ -235,15 +235,9 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
     setCurrentImageIndex(index >= 0 ? index : 0);
   }, [selectedImage, gallery]);
 
-  // Scroll effect for sticky button - disabled on mobile for better performance
+  // Scroll effect for sticky button - enabled for both mobile and desktop
   useEffect(() => {
     const handleScroll = () => {
-      // Only enable scroll effects on desktop
-      if (window.innerWidth < 1024) {
-        setIsButtonSticky(false);
-        return;
-      }
-
       if (buttonRef.current) {
         const rect = buttonRef.current.getBoundingClientRect()
         // Button becomes sticky when it's about to go out of view (with a small buffer)
@@ -253,10 +247,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
     }
 
     const handleResize = () => {
-      // Reset sticky state when switching between mobile/desktop
-      if (window.innerWidth < 1024) {
-        setIsButtonSticky(false);
-      }
+      // Reset sticky state when resizing
+      setIsButtonSticky(false);
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -276,7 +268,25 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
   }
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-4">
+    <>
+      <style jsx>{`
+        .safe-area-bottom {
+          padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        }
+        @media (max-width: 640px) {
+          .safe-area-bottom {
+            padding-left: max(1rem, env(safe-area-inset-left));
+            padding-right: max(1rem, env(safe-area-inset-right));
+          }
+        }
+        .mobile-sticky-button {
+          max-width: 100vw;
+          width: 100vw;
+          left: 0;
+          right: 0;
+        }
+      `}</style>
+      <div className="bg-white border border-gray-100 rounded-xl p-3 sm:p-4 lg:p-4 pb-20 sm:pb-24 lg:pb-4">
       {/* Mobile: Product Details First */}
       <div className="lg:hidden mb-8 bg-white border-b border-gray-200">
         {/* Product Details Section for Mobile */}
@@ -1864,27 +1874,31 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       )}
 
-      {/* Mobile Sticky Add to Basket Button - Disabled on mobile for better performance */}
-      <div className="lg:hidden hidden">
-        <div className="relative group">
+      {/* Mobile Sticky Add to Basket Button - Sticks to bottom when scrolled past original button */}
+      <div className={`lg:hidden transition-all duration-300 mobile-sticky-button ${
+        isButtonSticky 
+          ? 'fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 p-4 pb-6 shadow-lg safe-area-bottom overflow-hidden' 
+          : 'hidden'
+      }`}>
+        <div className="relative group w-full max-w-full overflow-hidden">
           {/* Main Button Background with Orange Theme */}
           <button 
             onClick={addToCart} 
-            className="w-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 text-white text-lg py-4 rounded-xl transition-all duration-300 flex items-center justify-start relative overflow-hidden pl-4 shadow-lg border border-orange-400/20"
+            className="w-full max-w-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 text-white text-lg py-4 rounded-xl transition-all duration-300 flex items-center justify-center relative overflow-hidden shadow-lg border border-orange-400/20"
           >
             {/* Add to Basket Text */}
-            <div className="relative z-10 flex items-center gap-3">
+            <div className="relative z-10 flex items-center gap-3 min-w-0 flex-1 max-w-full">
               <div className="w-5 h-5 text-white">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 12H6L5 9z"/>
                 </svg>
               </div>
-              <span className="font-bold text-lg">Add to Basket</span>
+              <span className="font-bold text-lg truncate max-w-full">Add to Basket</span>
             </div>
           </button>
           
           {/* Quantity Controls Overlay */}
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2 max-w-[100px]">
             {/* Minus Button */}
             <button 
               onClick={(e) => {
@@ -1894,14 +1908,14 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
               disabled={quantity <= 1}
             >
-              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M20 12H4" />
-              </svg>
+                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M20 12H4" />
+                  </svg>
             </button>
             
             {/* Quantity Display */}
-            <div className="w-10 h-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-              <span className="text-sm font-bold text-white">{quantity}</span>
+            <div className="w-10 h-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center min-w-0">
+              <span className="text-sm font-bold text-white truncate">{quantity}</span>
             </div>
             
             {/* Plus Button */}
@@ -1912,9 +1926,9 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               }}
               className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-300"
             >
-              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-              </svg>
+                                                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                   </svg>
             </button>
           </div>
         </div>
@@ -2315,6 +2329,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
