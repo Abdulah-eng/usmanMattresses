@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Check, Star, Heart, MessageCircle, Shield, ChevronDown, ChevronUp, X, ShoppingCart, Truck, Clock } from "lucide-react"
 import Image from "next/image"
 import { ReviewSection } from "@/components/review-section"
+import { ColorSelection } from "@/components/color-selection"
 
 export interface ProductDetailHappyProps {
   product: {
@@ -306,8 +307,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
                         </svg>
                       </div>
-                      <span className="text-sm sm:text-lg font-bold text-white break-words">
-                        Save £{(selectedSizeData.wasPrice - selectedSizeData.currentPrice).toFixed(2)}
+                      <span className="text-sm sm:text-lg text-white break-words">
+                        Save <span className="font-bold">£{(selectedSizeData.wasPrice - selectedSizeData.currentPrice).toFixed(2)}</span>
                       </span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -333,7 +334,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                   {/* Pricing - Now under the size name */}
                   <div className="space-y-1">
                     <div className="text-sm text-gray-500 line-through">Was £{selectedSizeData.wasPrice.toFixed(2)}</div>
-                    <div className="text-2xl font-bold text-orange-600">£{selectedSizeData.currentPrice.toFixed(2)}</div>
+                    <div className="text-2xl font-black text-orange-600">£{selectedSizeData.currentPrice.toFixed(2)}</div>
                   </div>
                 </div>
                 
@@ -420,6 +421,13 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                 </div>
               </div>
             </div>
+
+            {/* Color Selection */}
+            <ColorSelection 
+              selectedColor={selectedColor}
+              onColorChange={setSelectedColor}
+              className="mb-4"
+            />
 
             {/* Add Mattress/Pillow Button */}
             <button 
@@ -678,7 +686,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
             {/* 2. Reasons to Buy */}
             <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-100">
               <h2 className="text-lg sm:text-xl font-bold text-black mb-6">Reasons to Buy</h2>
-              <div className="grid grid-cols-1 gap-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-4 h-4 sm:w-5 sm:h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -718,6 +726,14 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     </svg>
                   </div>
                   <span className="text-sm sm:text-base text-gray-700 leading-relaxed">10-year warranty for peace of mind</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm sm:text-base text-gray-700 leading-relaxed">100-night sleep trial guarantee</span>
                 </div>
               </div>
             </div>
@@ -861,10 +877,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <div className="flex h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
-                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300 rounded-l-full"></div>
-                      <div className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300"></div>
-                      <div className="h-full bg-gray-200 flex-1 rounded-r-full"></div>
+                    <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 rounded-full shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300" style={{ width: '80%' }}></div>
                     </div>
                     <div className="flex justify-between text-xs text-gray-700 max-w-32 mx-auto">
                       <span>Low</span>
@@ -888,10 +902,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     <h3 className="text-sm font-bold text-gray-800">Pressure Relief</h3>
                   </div>
                   <div className="space-y-2">
-                    <div className="flex h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
-                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300 rounded-l-full"></div>
-                      <div className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300"></div>
-                      <div className="h-full bg-gray-200 flex-1 rounded-r-full"></div>
+                    <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 rounded-full shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300" style={{ width: '65%' }}></div>
                     </div>
                     <div className="flex justify-between text-xs text-gray-700 max-w-32 mx-auto">
                       <span>Basic</span>
@@ -922,10 +934,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <div className="flex h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
-                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300 rounded-l-full"></div>
-                      <div className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300"></div>
-                      <div className="h-full bg-gray-200 flex-1 rounded-r-full"></div>
+                    <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 rounded-full shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300" style={{ width: '80%' }}></div>
                     </div>
                     <div className="flex justify-between text-xs text-gray-700 max-w-32 mx-auto">
                       <span>Good</span>
@@ -954,10 +964,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <div className="flex h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
-                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300 rounded-l-full"></div>
-                      <div className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300"></div>
-                      <div className="h-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 flex-1 shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300 rounded-r-full"></div>
+                    <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden max-w-32 mx-auto shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 rounded-full shadow-lg transform hover:scale-y-125 hover:shadow-xl transition-all duration-300" style={{ width: '95%' }}></div>
                     </div>
                     <div className="flex justify-between text-xs text-gray-700 max-w-32 mx-auto">
                       <span>Good</span>
@@ -1485,7 +1493,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                   {/* Pricing - Now under the size name */}
                   <div className="space-y-1">
                     <div className="text-sm text-gray-500 line-through">Was £{selectedSizeData.wasPrice.toFixed(2)}</div>
-                    <div className="text-2xl font-bold text-orange-600">£{selectedSizeData.currentPrice.toFixed(2)}</div>
+                    <div className="text-2xl font-black text-orange-600">£{selectedSizeData.currentPrice.toFixed(2)}</div>
                   </div>
                 </div>
                 
@@ -1571,6 +1579,13 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                 </div>
               </div>
             </div>
+
+            {/* Color Selection */}
+            <ColorSelection 
+              selectedColor={selectedColor}
+              onColorChange={setSelectedColor}
+              className="mb-4"
+            />
 
             {/* Add Mattress/Pillow Button */}
             <button 
@@ -1934,25 +1949,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       </div>
 
-      {/* Select Colour - Only show for non-mattress products */}
-      {!product.name.toLowerCase().includes('mattress') && (
-      <div className="border rounded-xl p-4">
-        <div className="text-sm font-semibold text-gray-900 mb-3">Select Colour</div>
-        <div className="flex gap-3">
-          {["Oak", "Walnut", "White"].map((c) => (
-            <button
-              key={c}
-              onClick={() => setSelectedColor(c)}
-              className={`px-4 py-2 rounded-lg border text-sm ${
-                selectedColor === c ? "bg-blue-800 text-white border-blue-800" : "bg-white text-gray-700 border-gray-200 hover:border-blue-300"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-      )}
+
 
       {/* Size Modal */}
       {sizeModalOpen && (
