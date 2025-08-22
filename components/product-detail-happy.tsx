@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, Star, Heart, MessageCircle, Shield, ChevronDown, ChevronUp, X, ShoppingCart, Truck, Clock } from "lucide-react"
 import Image from "next/image"
-import { ReviewSection } from "@/components/review-section"
+
 import { ColorSelection } from "@/components/color-selection"
+import { useCart } from "@/lib/cart-context"
 
 export interface ProductDetailHappyProps {
   product: {
@@ -29,82 +31,130 @@ export interface ProductDetailHappyProps {
     sizes: string[]
     selectedSize?: string
     category?: string
+    type?: string
+    colors?: string[]
+    materials?: string[]
+    dimensions?: {
+      height: string
+      length: string
+      width: string
+      mattress_size: string
+      max_height: string
+      weight_capacity: string
+      pocket_springs: string
+      comfort_layer: string
+      support_layer: string
+    }
+    dispatchTime?: string
+    reasonsToBuy?: string[]
+    promotionalOffers?: any[]
+    productQuestions?: any[]
+    warrantyInfo?: any
+    careInstructions?: string
+    stockQuantity?: number
+    inStock?: boolean
+    shortDescription?: string
+    longDescription?: string
+    setupService?: boolean
+    setupCost?: number
+    monthlyPrice?: number
+    comfortLevel?: string
+    firmness?: string
+    firmnessLevel?: number
+    certifications?: string[]
+    inStore?: boolean
+    onSale?: boolean
   }
 }
 
 export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
-  const [selectedImage, setSelectedImage] = useState(product.image)
+  // Safety check for product data
+  if (!product || !product.name) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading product details...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const router = useRouter()
+  const { dispatch } = useCart()
+  const [selectedImage, setSelectedImage] = useState(product.images && product.images.length ? product.images[0] : product.image)
   const [modalImageIndex, setModalImageIndex] = useState(0)
-  const [selectedColor, setSelectedColor] = useState("Oak")
+  const [selectedColor, setSelectedColor] = useState(product.colors && product.colors.length > 0 ? product.colors[0] : "Standard")
   const [quantity, setQuantity] = useState(1)
   const [sizeModalOpen, setSizeModalOpen] = useState(false)
   const [imageModalOpen, setImageModalOpen] = useState(false)
-  const [reviewModalOpen, setReviewModalOpen] = useState(false)
+
   const [addItemModalOpen, setAddItemModalOpen] = useState(false)
+  const [addToBasketModalOpen, setAddToBasketModalOpen] = useState(false)
+
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ description: true })
+
+  // Debug function to test modal
+  const handleAddToBasketClick = () => {
+    console.log('Add to Basket clicked!')
+    console.log('Current modal state:', addToBasketModalOpen)
+    setAddToBasketModalOpen(true)
+    console.log('Modal state after setting:', true)
+  }
+
+  const addToCart = () => {
+    // Add to cart logic here
+    console.log(`Adding ${quantity} ${product.name} to cart`)
+    
+    // Actually add the item to cart using cart context
+    dispatch({
+      type: 'ADD_ITEM',
+      payload: {
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        image: selectedImage || product.image,
+        currentPrice: product.currentPrice,
+        originalPrice: product.originalPrice,
+        size: selectedSizeData?.name || 'Standard'
+      }
+    })
+    
+    // Open the add to basket modal to show success state
+    setAddToBasketModalOpen(true)
+  }
+
   const [isButtonSticky, setIsButtonSticky] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentSofaImage, setCurrentSofaImage] = useState(0)
   const buttonRef = useRef<HTMLDivElement>(null)
+  
+  // Sofa images array for the carousel
+  const sofaImages = product.images && product.images.length > 0 ? product.images : [product.image]
 
-  // Size data array
-  const sizeData = [
+  // Dynamic size data from product
+  const sizeData = product.sizes && product.sizes.length > 0 ? product.sizes.map((size, index) => ({
+    name: size,
+    dimensions: `${size} dimensions`, // You can enhance this with actual dimension data if available
+    availability: product.inStock ? "In Stock" : "Dispatched within 45 Days",
+    inStock: product.inStock || false,
+    wasPrice: product.originalPrice || 0,
+    currentPrice: product.currentPrice || 0
+  })) : [
     { 
-      name: "3' Single", 
-      dimensions: "W 90cm X L 190cm (3' x 6'3\")", 
-      availability: "Dispatched within 45 Days",
-      inStock: false,
-      wasPrice: 579.00,
-      currentPrice: 520.00
-    },
-    { 
-      name: "4' Small Double", 
-      dimensions: "W 120cm X L 190cm (4' x 6'3\")", 
+      name: "Standard Size", 
+      dimensions: "Standard dimensions", 
       availability: "In Stock",
       inStock: true,
-      wasPrice: 679.00,
-      currentPrice: 620.00
-    },
-    { 
-      name: "4'6 Double", 
-      dimensions: "W 135cm X L 190cm (4'6\" x 6'3\")", 
-      availability: "In Stock",
-      inStock: true,
-      wasPrice: 679.00,
-      currentPrice: 620.00
-    },
-    { 
-      name: "5' Kingsize", 
-      dimensions: "W 150cm X L 200cm (5' x 6'6\")", 
-      availability: "In Stock",
-      inStock: true,
-      wasPrice: 799.00,
-      currentPrice: 740.00
-    },
-    { 
-      name: "6' Super Kingsize", 
-      dimensions: "W 180cm X L 200cm (6' x 6'6\")", 
-      availability: "In Stock",
-      inStock: true,
-      wasPrice: 999.00,
-      currentPrice: 890.00
-    },
-    { 
-      name: "5' Kingsize ZIP", 
-      dimensions: "5' x 6'6\" Or Two Halves 2'6\" x 6'6\"", 
-      availability: "Dispatched within 45 Days",
-      inStock: false,
-      wasPrice: 1549.00,
-      currentPrice: 1379.00
-    },
-    { 
-      name: "6' Super Kingsize ZIP", 
-      dimensions: "6' x 6'6\" Or Two Halves 3' x 6'6\"", 
-      availability: "Dispatched within 45 Days",
-      inStock: false,
-      wasPrice: 1899.00,
-      currentPrice: 1699.00
+      wasPrice: product.originalPrice || 0,
+      currentPrice: product.currentPrice || 0
     }
   ]
+  
+  // Ensure we have valid prices
+  const originalPrice = product.originalPrice || product.currentPrice || 0
+  const currentPrice = product.currentPrice || product.originalPrice || 0
+  const hasValidPrices = originalPrice > 0 && currentPrice > 0
   
   // Mattress and pillow data for the add item modal
   interface MattressItem {
@@ -131,88 +181,72 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
     savings: string
   }
   
-  const mattressData: MattressItem[] = [
-    {
-      id: 1,
-      name: "Theo Pocket Spring Mattress",
-      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop",
-      rating: 5,
-      reviewCount: 208,
-      originalPrice: 179.99,
-      currentPrice: 161.99,
-      firmness: "Soft-Medium",
-      savings: "10%"
-    },
-    {
-      id: 2,
-      name: "Noah Memory Foam Spring Mattress",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-      rating: 5,
-      reviewCount: 204,
-      originalPrice: 149.99,
-      currentPrice: 134.99,
-      firmness: "Medium",
-      savings: "10%"
-    },
-    {
-      id: 3,
-      name: "Premium Hybrid Mattress",
-      image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop",
-      rating: 5,
-      reviewCount: 156,
-      originalPrice: 299.99,
-      currentPrice: 269.99,
-      firmness: "Medium-Firm",
-      savings: "10%"
-    }
-  ]
+  // Dynamic mattress data - can be populated from database or removed if not needed
+  const mattressData: MattressItem[] = product.promotionalOffers?.filter(offer => offer.type === 'mattress')?.map(offer => ({
+    id: offer.id || 1,
+    name: offer.name || "Related Mattress",
+    image: offer.image || "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop",
+    rating: offer.rating || 5,
+    reviewCount: offer.reviewCount || 200,
+    originalPrice: offer.originalPrice || 179.99,
+    currentPrice: offer.currentPrice || 161.99,
+    firmness: offer.firmness || "Soft-Medium",
+    savings: offer.savings || "10%"
+  })) || []
+
+  // Dynamic pillow data - can be populated from database or removed if not needed
+  const pillowData: PillowItem[] = product.promotionalOffers?.filter(offer => offer.type === 'pillow')?.map(offer => ({
+    id: offer.id || 1,
+    name: offer.name || "Related Pillow",
+    image: offer.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+    rating: offer.rating || 5,
+    reviewCount: offer.reviewCount || 200,
+    originalPrice: offer.originalPrice || 149.99,
+    currentPrice: offer.currentPrice || 134.99,
+    type: offer.type || "Memory Foam",
+    savings: offer.savings || "10%"
+  })) || []
   
-  const pillowData: PillowItem[] = [
-    {
-      id: 1,
-      name: "Memory Foam Comfort Pillow",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-      rating: 5,
-      reviewCount: 189,
-      originalPrice: 39.99,
-      currentPrice: 35.99,
-      type: "Memory Foam",
-      savings: "10%"
-    },
-    {
-      id: 2,
-      name: "Cooling Gel Pillow",
-      image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop",
-      rating: 5,
-      reviewCount: 167,
-      originalPrice: 49.99,
-      currentPrice: 44.99,
-      type: "Cooling Gel",
-      savings: "10%"
-    },
-    {
-      id: 3,
-      name: "Premium Down Alternative Pillow",
-      image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=300&fit=crop",
-      rating: 5,
-      reviewCount: 203,
-      originalPrice: 69.99,
-      currentPrice: 62.99,
-      type: "Down Alternative",
-      savings: "10%"
-    }
-  ]
+  const [selectedSize, setSelectedSize] = useState(product.selectedSize || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : "Standard Size"))
   
-  const [selectedSize, setSelectedSize] = useState("3' Single")
-  
-  // Get the selected size data
-  const selectedSizeData = sizeData.find(size => size.name === selectedSize) || sizeData[0]
+  // Get the selected size data with fallback
+  const selectedSizeData = sizeData.find(size => size.name === selectedSize) || sizeData[0] || {
+    name: "Standard Size",
+    dimensions: "Standard dimensions",
+    availability: "In Stock",
+    inStock: true,
+    wasPrice: originalPrice,
+    currentPrice: currentPrice
+  }
+
+  // Ensure selectedSizeData is always defined
+  if (!selectedSizeData) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading product details...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Ensure selectedSizeData has valid prices
+  if (!selectedSizeData.wasPrice || !selectedSizeData.currentPrice) {
+    selectedSizeData.wasPrice = selectedSizeData.wasPrice || originalPrice
+    selectedSizeData.currentPrice = selectedSizeData.currentPrice || currentPrice
+  }
+
+  // Safe monthly price calculation
+  const monthlyPrice = selectedSizeData.currentPrice > 0 ? Math.floor(selectedSizeData.currentPrice / 12) : 0
 
   const gallery = product.images && product.images.length > 0 ? product.images : [product.image]
 
-  const addToCart = () => {
-    // Add to cart logic here
-    console.log(`Adding ${quantity} ${product.name} to cart`)
+  const openAddToBasketModal = () => {
+    console.log('Opening Add to Basket modal')
+    // Directly add to cart when opening modal
+    // This simulates the behavior you want
+    setAddToBasketModalOpen(true)
   }
 
   // Carousel navigation functions
@@ -235,6 +269,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
     const index = gallery.findIndex(img => img === selectedImage);
     setCurrentImageIndex(index >= 0 ? index : 0);
   }, [selectedImage, gallery]);
+
+
 
   // Scroll effect for sticky button - enabled for both mobile and desktop
   useEffect(() => {
@@ -260,6 +296,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
       window.removeEventListener('resize', handleResize)
     }
   }, [])
+
+
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -288,6 +326,11 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         }
       `}</style>
       <div className="bg-white border border-gray-100 rounded-xl p-3 sm:p-4 lg:p-4 pb-20 sm:pb-24 lg:pb-4">
+      
+
+      
+
+      
       {/* Mobile: Product Details First */}
       <div className="lg:hidden mb-8 bg-white border-b border-gray-200">
         {/* Product Details Section for Mobile */}
@@ -298,7 +341,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 break-words">{product.name}</h1>
               
               {/* Green Box with Reviews, Stars, and Savings - No Original Price */}
-              {selectedSizeData.wasPrice && selectedSizeData.wasPrice > selectedSizeData.currentPrice && (
+              {selectedSizeData && selectedSizeData.wasPrice && selectedSizeData.currentPrice && selectedSizeData.wasPrice > selectedSizeData.currentPrice && (
               <div className="bg-green-600 border border-green-700 rounded-lg p-3 mb-4 max-w-full overflow-hidden">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
                     <div className="flex items-center gap-2 min-w-0">
@@ -308,7 +351,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                         </svg>
                       </div>
                       <span className="text-sm sm:text-lg text-white break-words">
-                        Save <span className="font-bold">£{(selectedSizeData.wasPrice - selectedSizeData.currentPrice).toFixed(2)}</span>
+                        Save £{(selectedSizeData.wasPrice > 0 && selectedSizeData.currentPrice > 0 ? (selectedSizeData.wasPrice - selectedSizeData.currentPrice).toFixed(2) : '0.00')}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -329,19 +372,19 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                 {/* Left Side: Size Name and Pricing */}
                 <div className="flex-1 min-w-0">
                   {/* Size Name */}
-                  <div className="font-semibold text-lg text-gray-900 mb-2 break-words">{selectedSizeData.name}</div>
+                  <div className="font-black text-lg sm:text-xl lg:text-2xl text-black mb-3 break-words">{selectedSizeData.name}</div>
                   
                   {/* Pricing - Now under the size name */}
                   <div className="space-y-1">
-                    <div className="text-sm text-gray-500 line-through">Was £{selectedSizeData.wasPrice.toFixed(2)}</div>
-                    <div className="text-2xl font-black text-orange-600">£{selectedSizeData.currentPrice.toFixed(2)}</div>
+                    <div className="text-sm text-gray-500 line-through">Was £{selectedSizeData.wasPrice > 0 ? selectedSizeData.wasPrice.toFixed(2) : '0.00'}</div>
+                    <div className="text-2xl font-black text-orange-600">£{selectedSizeData.currentPrice > 0 ? selectedSizeData.currentPrice.toFixed(2) : '0.00'}</div>
                   </div>
                 </div>
                 
                 {/* Right Side: Dimensions and Availability */}
                 <div className="text-left sm:text-right sm:ml-4 min-w-0">
                   {/* Dimensions */}
-                  <div className="text-sm text-gray-600 mb-3 break-words">{selectedSizeData.dimensions}</div>
+                  <div className="font-semibold text-base sm:text-lg lg:text-xl text-gray-800 mb-3 break-words">{selectedSizeData.dimensions}</div>
                   
                   {/* Availability Status */}
                   <div className="flex items-center gap-2">
@@ -371,53 +414,38 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               <div className="space-y-3">
                 <h3 className="font-semibold text-gray-800">Product Features</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-x-4 gap-y-2">
-                  {/* Left Column */}
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex-shrink-0"></div>
-                    <span className="text-sm text-gray-700 break-words">Medium-Firm</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">1000 Springs</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9 9 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Memory Foam</span>
-                  </div>
-                  
-                  {/* Right Column */}
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Pocket Spring</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518-4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Premium Quality</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Fast Delivery</span>
-                  </div>
+                  {/* Dynamic features from product */}
+                  {product.features && product.features.length > 0 ? (
+                    product.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 min-w-0">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-gray-700 break-words">{feature}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-gray-700 break-words">{product.firmness || 'Medium-Firm'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-gray-700 break-words">{product.dimensions?.pocket_springs || '1000 Springs'}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -426,6 +454,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
             <ColorSelection 
               selectedColor={selectedColor}
               onColorChange={setSelectedColor}
+              colors={product.colors || ["Standard"]}
               className="mb-4"
             />
 
@@ -563,7 +592,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                 <span className="text-xs font-bold text-black">Klarna</span>
               </div>
               <div className="text-sm text-gray-700">
-                3 payments of <span className="font-semibold">£{(selectedSizeData.currentPrice / 3).toFixed(2)}</span> at 0% interest with <span className="font-semibold">Klarna</span>
+                3 payments of <span className="font-semibold">£{(selectedSizeData.currentPrice > 0 ? (selectedSizeData.currentPrice / 3).toFixed(2) : '0.00')}</span> at 0% interest with <span className="font-semibold">Klarna</span>
               </div>
             </div>
             <div className="text-sm text-primary underline cursor-pointer">Learn more</div>
@@ -571,13 +600,15 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       </div>
 
+
+
       {/* Desktop: Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 relative">
         {/* Left: gallery - takes 3/5 of the width */}
         <div className="lg:col-span-3 min-w-0">
           <div className="z-10">
             {/* Main Large Image */}
-            <div className="relative h-[60vh] sm:h-[70vh] lg:h-[95vh] rounded-xl overflow-hidden bg-gray-50 cursor-pointer mb-4" onClick={() => {
+            <div className="relative h-[60vh] sm:h-[70vh] lg:h-[95vh] xl:h-[100vh] 2xl:h-[110vh] rounded-xl overflow-hidden bg-gray-50 cursor-pointer mb-4" onClick={() => {
               const currentIndex = gallery.findIndex(img => img === selectedImage);
               setModalImageIndex(currentIndex >= 0 ? currentIndex : 0);
               setImageModalOpen(true);
@@ -617,7 +648,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                       <div
                         key={idx}
                         onClick={() => setSelectedImage(image)}
-                        className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer group flex-shrink-0 ${
+                        className={`relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 xl:w-32 xl:h-32 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer group flex-shrink-0 ${
                           selectedImage === image 
                             ? "border-orange-500 ring-2 ring-orange-200 scale-105" 
                             : "border-gray-200 hover:border-orange-300"
@@ -1017,7 +1048,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                         {/* Introduction */}
                         <div className="text-center">
                           <p className="text-gray-700 leading-relaxed text-lg max-w-3xl mx-auto">
-                            The King Arthur Mattress represents the pinnacle of sleep technology, combining advanced pocket spring engineering with premium memory foam comfort layers. This hybrid mattress is designed to provide exceptional support and pressure relief for all sleeping positions.
+                            {((product as any).longDescription) || `Discover ${product.name} — designed for comfort, support, and everyday durability.`}
                           </p>
                         </div>
                         
@@ -1025,19 +1056,11 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                         <div className="border-t border-gray-200 my-8"></div>
                         
                         {/* Premium Sleep Technology Section */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                          <div className="order-2 lg:order-1">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center lg:text-left">Premium Sleep Technology</h3>
-                            <p className="text-gray-700 leading-relaxed mb-4">
-                              Our advanced mattress technology combines the best of both worlds. The innovative pocket spring system provides targeted support while the premium memory foam layers offer exceptional comfort and pressure relief.
-                            </p>
-                            <p className="text-gray-700 leading-relaxed">
-                              Each spring works independently to contour to your body shape, ensuring optimal spinal alignment and reducing pressure points for a truly restful night's sleep.
-                            </p>
-                          </div>
-                          <div className="order-1 lg:order-2 relative h-64 lg:h-80 rounded-xl overflow-hidden bg-gray-100">
+                        <div className="text-center space-y-6">
+                          <h3 className="text-2xl font-bold text-gray-900">Premium Sleep Technology</h3>
+                          <div className="relative h-80 lg:h-96 xl:h-[28rem] rounded-xl overflow-hidden bg-gray-100 mx-auto max-w-3xl lg:max-w-4xl">
                             <img 
-                              src="/images/mattress-springs.jpg" 
+                              src="/hello.jpeg" 
                               alt="Premium mattress with pocket springs showing internal structure"
                               className="w-full h-full object-cover"
                               onError={(e) => {
@@ -1046,16 +1069,25 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                               }}
                             />
                           </div>
+                          <div className="max-w-3xl mx-auto space-y-4">
+                            <p className="text-gray-700 leading-relaxed">
+                              Our advanced mattress technology combines the best of both worlds. The innovative pocket spring system provides targeted support while the premium memory foam layers offer exceptional comfort and pressure relief.
+                            </p>
+                            <p className="text-gray-700 leading-relaxed">
+                              Each spring works independently to contour to your body shape, ensuring optimal spinal alignment and reducing pressure points for a truly restful night's sleep.
+                            </p>
+                          </div>
                         </div>
                         
                         {/* Divider */}
                         <div className="border-t border-gray-200 my-8"></div>
                         
                         {/* Superior Comfort Features Section */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                          <div className="relative h-64 lg:h-80 rounded-xl overflow-hidden bg-gray-100">
+                        <div className="text-center space-y-6">
+                          <h3 className="text-2xl font-bold text-gray-900">Superior Comfort Features</h3>
+                          <div className="relative h-80 lg:h-96 xl:h-[28rem] rounded-xl overflow-hidden bg-gray-100 mx-auto max-w-3xl lg:max-w-4xl">
                             <img 
-                              src="/images/mattress-comfort.jpg" 
+                              src="/hi.jpeg" 
                               alt="Luxury mattress with premium bedding and pillows"
                               className="w-full h-full object-cover"
                               onError={(e) => {
@@ -1064,9 +1096,8 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                               }}
                             />
                           </div>
-                          <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center lg:text-left">Superior Comfort Features</h3>
-                            <p className="text-gray-700 leading-relaxed mb-4">
+                          <div className="max-w-3xl mx-auto space-y-4">
+                            <p className="text-gray-700 leading-relaxed">
                               Every detail has been carefully considered to provide the ultimate sleep experience. The breathable bamboo cover regulates temperature while the edge-to-edge support ensures you can use the full mattress surface without roll-off.
                             </p>
                             <p className="text-gray-700 leading-relaxed">
@@ -1079,26 +1110,26 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                         <div className="border-t border-gray-200 my-8"></div>
                         
                         {/* Quality Assurance Section */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                          <div className="order-2 lg:order-1">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center lg:text-left">Quality Assurance</h3>
-                            <p className="text-gray-700 leading-relaxed mb-4">
+                        <div className="text-center space-y-6">
+                          <h3 className="text-2xl font-bold text-gray-900">Quality Assurance</h3>
+                          <div className="relative h-80 lg:h-96 xl:h-[28rem] rounded-xl overflow-hidden bg-gray-100 mx-auto max-w-4xl">
+                            <img 
+                              src="/hell.jpeg" 
+                              alt="Professional mattress testing and quality control"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23f3f4f6'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%236b7280'%3EMattress Quality%3C/text%3E%3C/svg%3E";
+                              }}
+                            />
+                          </div>
+                          <div className="max-w-3xl mx-auto space-y-4">
+                            <p className="text-gray-700 leading-relaxed">
                               We stand behind the quality of our mattress with comprehensive testing and certification. Every mattress undergoes rigorous quality control to ensure it meets our exacting standards for comfort, durability, and performance.
                             </p>
                             <p className="text-gray-700 leading-relaxed">
                               Backed by a 10-year warranty and 100-night trial, you can purchase with complete confidence. Our commitment to quality means you'll enjoy exceptional sleep for years to come.
                             </p>
-                          </div>
-                          <div className="order-1 lg:order-2 relative h-64 lg:h-80 rounded-xl overflow-hidden bg-gray-100">
-                            <img 
-                              src="/images/mattress-quality.jpg" 
-                              alt="Professional mattress testing and quality control"
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23f3f4f6'%3E%3Crect width='%23f3f4f6'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%236b7280'%3EMattress Quality%3C/text%3E%3C/svg%3E";
-                              }}
-                            />
                           </div>
                         </div>
                       </div>
@@ -1142,8 +1173,75 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                       <div className="pt-6 space-y-8">
                         {/* Product Name Header */}
                         <div className="text-center">
-                          <h3 className="text-2xl font-bold text-gray-900 mb-2">King Arthur Mattress</h3>
-                          <p className="text-gray-600">Premium Hybrid Mattress Dimensions</p>
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h3>
+                          <p className="text-gray-600">Product Dimensions</p>
+                        </div>
+                        
+                        {/* Swipeable Sofa Images Carousel */}
+                        <div className="relative mb-8">
+                          <div className="flex justify-center">
+                            <div className="relative h-80 lg:h-96 xl:h-[28rem] 2xl:h-[32rem] w-full max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl rounded-xl overflow-hidden bg-gray-100">
+                              {/* Current Image */}
+                              <img 
+                                src={sofaImages[currentSofaImage]} 
+                                alt={`Sofa showing mattress dimensions and scale - View ${currentSofaImage + 1}`}
+                                className="w-full h-full object-cover transition-opacity duration-300"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23f3f4f6'%3E%3Crect width='400' height='300' fill='%23f4f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%236b7280'%3ESofa Image%3C/text%3E%3C/svg%3E";
+                                }}
+                              />
+                              
+                              {/* Navigation Arrows */}
+                              <button 
+                                onClick={() => setCurrentSofaImage(prev => prev === 0 ? sofaImages.length - 1 : prev - 1)}
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110"
+                              >
+                                <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                              </button>
+                              
+                              <button 
+                                onClick={() => setCurrentSofaImage(prev => prev === sofaImages.length - 1 ? 0 : prev + 1)}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110"
+                              >
+                                <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          
+                          {/* Image Thumbnails */}
+                          <div className="flex justify-center mt-4 space-x-3">
+                            {sofaImages.map((image, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setCurrentSofaImage(index)}
+                                className={`relative w-20 h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer group flex-shrink-0 ${
+                                  index === currentSofaImage 
+                                    ? "border-blue-500 ring-2 ring-blue-200 scale-105" 
+                                    : "border-gray-200 hover:border-blue-300"
+                                }`}
+                              >
+                                <img 
+                                  src={image} 
+                                  alt={`Sofa view ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23f3f4f6'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%236b7280'%3ESofa Thumbnail%3C/text%3E%3C/svg%3E";
+                                  }}
+                                />
+                                
+                                {/* Hover Overlay */}
+                                <div className={`absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 ${
+                                  index === currentSofaImage ? 'bg-blue-500/20' : ''
+                                }`}></div>
+                              </button>
+                            ))}
+                          </div>
                         </div>
                         
                         {/* Dimensions Grid Layout */}
@@ -1155,15 +1253,15 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">A: Height</span>
-                                  <span className="text-gray-900 font-semibold">25 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.height || '25 cm'}</span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">B: Length</span>
-                                  <span className="text-gray-900 font-semibold">200 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.length || 'L 190cm'}</span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">C: Width</span>
-                                  <span className="text-gray-900 font-semibold">180 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.width || '135cm'}</span>
                                 </div>
                               </div>
                             </div>
@@ -1173,15 +1271,15 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">Mattress Size</span>
-                                  <span className="text-gray-900 font-semibold">200 x 180 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.mattress_size || '135cm x L 190cm cm'}</span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">Maximum Height</span>
-                                  <span className="text-gray-900 font-semibold">25 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.max_height || '25 cm'}</span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">Weight Capacity</span>
-                                  <span className="text-gray-900 font-semibold">200 kg</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.weight_capacity || '200 kg'}</span>
                                 </div>
                               </div>
                             </div>
@@ -1191,15 +1289,15 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">Pocket Springs</span>
-                                  <span className="text-gray-900 font-semibold">1000 count</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.pocket_springs || '1000 count'}</span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">Comfort Layer</span>
-                                  <span className="text-gray-900 font-semibold">8 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.comfort_layer || '8 cm'}</span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-gray-200">
                                   <span className="font-medium text-gray-700">Support Layer</span>
-                                  <span className="text-gray-900 font-semibold">17 cm</span>
+                                  <span className="text-gray-900 font-semibold">{product.dimensions?.support_layer || '17 cm'}</span>
                                 </div>
                               </div>
                             </div>
@@ -1214,40 +1312,59 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                             <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
                               {/* Mattress Diagram */}
                               <div className="relative w-full h-full flex items-center justify-center">
-                                {/* Main Mattress */}
-                                <div className="relative w-48 h-32 bg-gradient-to-br from-orange-200 to-orange-300 rounded-lg border-2 border-orange-400 shadow-lg">
-                                  {/* Pocket Springs Pattern */}
-                                  <div className="absolute inset-2 grid grid-cols-8 grid-rows-4 gap-1">
-                                    {Array.from({ length: 32 }).map((_, i) => (
-                                      <div key={i} className="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-60"></div>
-                                    ))}
-                                  </div>
+                                                                 {/* Main Mattress */}
+                                 <div className="relative w-48 h-32 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl border-2 border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300">
+                                   {/* Quilted Pattern - Top Layer */}
+                                   <div className="absolute inset-2 grid grid-cols-12 grid-rows-6 gap-1">
+                                     {Array.from({ length: 72 }).map((_, i) => (
+                                       <div key={i} className="w-1 h-1 bg-gray-300 rounded-full opacity-40 hover:opacity-80 transition-opacity duration-200"></div>
+                                     ))}
+                                   </div>
+                                   
+                                   {/* Memory Foam Layer - Light Blue */}
+                                   <div className="absolute top-4 left-1 right-1 h-2 bg-gradient-to-r from-blue-100 to-blue-200 rounded-sm border border-blue-200"></div>
+                                   
+                                   {/* Pocket Springs Pattern - Subtle dots */}
+                                   <div className="absolute inset-4 grid grid-cols-10 grid-rows-5 gap-1">
+                                     {Array.from({ length: 50 }).map((_, i) => (
+                                       <div key={i} className="w-1 h-1 bg-gray-400 rounded-full opacity-60 hover:opacity-80 transition-opacity duration-200"></div>
+                                     ))}
+                                   </div>
+                                   
+                                   {/* Elegant Inner Border */}
+                                   <div className="absolute inset-1 border border-gray-200 rounded-lg opacity-60"></div>
+                                   
+                                   {/* Hover Effect Overlay */}
+                                   <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/10 to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                                   
-                                  {/* Dimension Labels */}
-                                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-                                    <div className="flex items-center gap-1">
-                                      <span className="text-xs font-bold text-gray-700">A</span>
-                                      <span className="text-xs text-gray-600">25cm</span>
-                                    </div>
-                                  </div>
-                                  <div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
-                                    <div className="flex items-center gap-1">
-                                      <span className="text-xs font-bold text-gray-700">B</span>
-                                      <span className="text-xs text-gray-600">200cm</span>
-                                    </div>
-                                  </div>
-                                  <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-                                    <div className="flex items-center gap-1">
-                                      <span className="text-xs font-bold text-gray-700">C</span>
-                                      <span className="text-xs text-gray-600">180cm</span>
-                                    </div>
-                                  </div>
+                                                                     {/* Dimension Labels */}
+                                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                                     <div className="flex items-center gap-1 bg-white rounded px-2 py-1 shadow-sm border border-gray-200">
+                                       <span className="text-xs font-bold text-gray-700">A</span>
+                                       <span className="text-xs text-gray-600">25cm</span>
+                                       <span className="text-xs text-gray-500">Height</span>
+                                     </div>
+                                   </div>
+                                   <div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
+                                     <div className="flex items-center gap-1 bg-white rounded px-2 py-1 shadow-sm border border-gray-200">
+                                       <span className="text-xs font-bold text-gray-700">B</span>
+                                       <span className="text-xs text-gray-600">{product.dimensions?.length || 'L 190cm'}</span>
+                                       <span className="text-xs text-gray-500">Length</span>
+                                     </div>
+                                   </div>
+                                   <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+                                     <div className="flex items-center gap-1 bg-white rounded px-2 py-1 shadow-sm border border-gray-200">
+                                       <span className="text-xs font-bold text-gray-700">C</span>
+                                       <span className="text-xs text-gray-600">{product.dimensions?.width || '135cm'}</span>
+                                       <span className="text-xs text-gray-500">Width</span>
+                                     </div>
+                                   </div>
                                   
-                                  {/* Comfort Layer Indicator */}
-                                  <div className="absolute top-1 left-1 right-1 h-2 bg-gradient-to-r from-blue-200 to-blue-300 rounded-sm"></div>
-                                  
-                                  {/* Support Layer Indicator */}
-                                  <div className="absolute bottom-1 left-1 right-1 h-2 bg-gradient-to-r from-green-200 to-green-300 rounded-sm"></div>
+                                                                     {/* Comfort Layer Indicator - Blue */}
+                                   <div className="absolute top-1 left-1 right-1 h-3 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 rounded-sm border border-blue-300"></div>
+                                   
+                                   {/* Support Layer Indicator - Green */}
+                                   <div className="absolute bottom-1 left-1 right-1 h-3 bg-gradient-to-r from-green-200 via-green-300 to-green-400 rounded-sm border border-green-300"></div>
                                 </div>
                                 
                                 {/* Dimension Lines */}
@@ -1264,10 +1381,27 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                           <h4 className="text-xl font-semibold text-gray-900 mb-4">Available Sizes</h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {sizeData.map((size) => (
-                              <div key={size.name} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                              <div 
+                                key={size.name} 
+                                className={`bg-white p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 cursor-pointer ${
+                                  selectedSize === size.name 
+                                    ? 'border-blue-500 bg-blue-50 shadow-md' 
+                                    : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                                }`}
+                                onClick={() => setSelectedSize(size.name)}
+                              >
                                 <div className="font-semibold text-gray-900 mb-2">{size.name}</div>
                                 <div className="text-sm text-gray-600 mb-2">{size.dimensions}</div>
                                 <div className="text-sm text-orange-600 font-semibold">£{size.currentPrice.toFixed(2)}</div>
+                                
+                                {/* Selection Indicator */}
+                                {selectedSize === size.name && (
+                                  <div className="absolute top-2 right-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -1324,30 +1458,41 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                       <div className="pt-6 space-y-6">
                         {/* FAQ Section */}
                         <div className="space-y-4">
-                          <div className="border-b border-gray-200 pb-4">
-                            <h4 className="font-semibold text-gray-900 mb-2">How firm is this mattress?</h4>
-                            <p className="text-gray-700 text-sm">The King Arthur Mattress has a medium-firm feel, rated 6-7 on a scale of 1-10. This provides excellent support while maintaining comfort for most sleepers.</p>
-                          </div>
-                          
-                          <div className="border-b border-gray-200 pb-4">
-                            <h4 className="font-semibold text-gray-900 mb-2">What's the difference between pocket springs and regular springs?</h4>
-                            <p className="text-gray-700 text-sm">Pocket springs are individually wrapped, allowing them to move independently and provide targeted support. Regular springs are connected and move together, offering less precise support.</p>
-                          </div>
-                          
-                          <div className="border-b border-gray-200 pb-4">
-                            <h4 className="font-semibold text-gray-900 mb-2">How long does delivery take?</h4>
-                            <p className="text-gray-700 text-sm">Standard delivery takes 3-5 business days. Express delivery is available for next-day delivery in most areas.</p>
-                          </div>
-                          
-                          <div className="border-b border-gray-200 pb-4">
-                            <h4 className="font-semibold text-gray-900 mb-2">Can I return the mattress if I don't like it?</h4>
-                            <p className="text-gray-700 text-sm">Yes! We offer a 100-night trial period. If you're not completely satisfied, you can return the mattress for a full refund.</p>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">How do I care for my mattress?</h4>
-                            <p className="text-gray-700 text-sm">Rotate your mattress every 3-6 months, use a mattress protector, and clean spills immediately. The bamboo cover is removable and machine washable.</p>
-                          </div>
+                          {product.productQuestions && product.productQuestions.length > 0 ? (
+                            product.productQuestions.map((question, index) => (
+                              <div key={index} className="border-b border-gray-200 pb-4">
+                                <h4 className="font-semibold text-gray-900 mb-2">{question.question || `Question ${index + 1}`}</h4>
+                                <p className="text-gray-700 text-sm">{question.answer || 'Answer not available'}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              <div className="border-b border-gray-200 pb-4">
+                                <h4 className="font-semibold text-gray-900 mb-2">How firm is this mattress?</h4>
+                                <p className="text-gray-700 text-sm">This product has a {product.firmness?.toLowerCase() || 'medium-firm'} feel, providing excellent support while maintaining comfort for most sleepers.</p>
+                              </div>
+                              
+                              <div className="border-b border-gray-200 pb-4">
+                                <h4 className="font-semibold text-gray-900 mb-2">What's the difference between pocket springs and regular springs?</h4>
+                                <p className="text-gray-700 text-sm">Pocket springs are individually wrapped, allowing them to move independently and provide targeted support. Regular springs are connected and move together, offering less precise support.</p>
+                              </div>
+                              
+                              <div className="border-b border-gray-200 pb-4">
+                                <h4 className="font-semibold text-gray-900 mb-2">How long does delivery take?</h4>
+                                <p className="text-gray-700 text-sm">{product.dispatchTime || 'Standard delivery takes 3-5 business days. Express delivery is available for next-day delivery in most areas.'}</p>
+                              </div>
+                              
+                              <div className="border-b border-gray-200 pb-4">
+                                <h4 className="font-semibold text-gray-900 mb-2">Can I return the mattress if I don't like it?</h4>
+                                <p className="text-gray-700 text-sm">Yes! We offer a 100-night trial period. If you're not completely satisfied, you can return the mattress for a full refund.</p>
+                              </div>
+                              
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">How do I care for my mattress?</h4>
+                                <p className="text-gray-700 text-sm">{product.careInstructions || 'Rotate your mattress every 3-6 months, use a mattress protector, and clean spills immediately. The bamboo cover is removable and machine washable.'}</p>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1391,50 +1536,59 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                         {/* Warranty Details */}
                         <div>
                           <h4 className="text-lg font-semibold text-gray-900 mb-3">Warranty Coverage</h4>
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                              </svg>
-                              <span className="font-semibold text-green-800">10-Year Full Warranty</span>
+                          {product.warrantyInfo && Object.keys(product.warrantyInfo).length > 0 ? (
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span className="font-semibold text-green-800">{product.warrantyInfo.duration || '10-Year Full Warranty'}</span>
+                              </div>
+                              <p className="text-green-700 text-sm">{product.warrantyInfo.description || 'Comprehensive coverage against manufacturing defects, sagging, and structural issues.'}</p>
                             </div>
-                            <p className="text-green-700 text-sm">Comprehensive coverage against manufacturing defects, sagging, and structural issues.</p>
-                          </div>
+                          ) : (
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span className="font-semibold text-green-800">10-Year Full Warranty</span>
+                              </div>
+                              <p className="text-green-700 text-sm">Comprehensive coverage against manufacturing defects, sagging, and structural issues.</p>
+                            </div>
+                          )}
                         </div>
                         
                         {/* Care Instructions */}
                         <div>
                           <h4 className="text-lg font-semibold text-gray-900 mb-3">Care Instructions</h4>
-                          <div className="space-y-3">
-                            <div className="flex items-start gap-3">
-                              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                              <div>
-                                <span className="font-medium text-gray-900">Regular Rotation:</span>
-                                <span className="text-gray-700 text-sm"> Rotate your mattress every 3-6 months to ensure even wear.</span>
+                          {product.careInstructions ? (
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <div>
+                                  <span className="text-gray-700 text-sm">{product.careInstructions}</span>
+                                </div>
                               </div>
                             </div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                              <div>
-                                <span className="font-medium text-gray-900">Use a Mattress Protector:</span>
-                                <span className="text-gray-700 text-sm"> Protect against spills, stains, and allergens.</span>
+                          ) : (
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <div>
+                                  <span className="font-medium text-gray-900">Regular Rotation:</span>
+                                  <span className="text-gray-700 text-sm"> Rotate your mattress every 3-6 months to ensure even wear.</span>
+                                </div>
+                              </div>
+                              <div className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <div>
+                                  <span className="font-medium text-gray-900">Use a Mattress Protector:</span>
+                                  <span className="text-gray-700 text-sm"> Protect against spills, stains, and allergens.</span>
+                                </div>
                               </div>
                             </div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                              <div>
-                                <span className="font-medium text-gray-900">Clean Spills Immediately:</span>
-                                <span className="text-gray-700 text-sm"> Blot with a clean cloth and mild detergent if needed.</span>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                              <div>
-                                <span className="font-medium text-gray-900">Bamboo Cover Care:</span>
-                                <span className="text-gray-700 text-sm"> Remove and machine wash on gentle cycle, air dry.</span>
-                              </div>
-                            </div>
-                          </div>
+                          )}
                         </div>
                         
                         {/* Trial Period */}
@@ -1457,15 +1611,15 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
 
         {/* Right: details - takes 2/5 of the width */}
-        <div className="hidden lg:block lg:col-span-2 space-y-4 lg:sticky lg:top-0 lg:self-start z-30 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-200 transition-all duration-300" style={{ position: 'sticky', top: 0, willChange: 'transform', transform: 'translateZ(0)' }}>
+        <div className="hidden lg:block lg:col-span-2 space-y-2 lg:sticky lg:top-0 lg:self-start z-30 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-200 transition-all duration-300" style={{ position: 'sticky', top: 0, willChange: 'transform', transform: 'translateZ(0)' }}>
           {/* Merged Product Info & Size Card */}
-          <div className="rounded-xl p-6 bg-white shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer relative z-0">
+          <div className="rounded-xl p-4 bg-white shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer relative z-0">
             {/* Product Title */}
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">{product.name}</h1>
               
               {/* Green Box with Reviews, Stars, and Savings - No Original Price */}
-              {selectedSizeData.wasPrice && selectedSizeData.wasPrice > selectedSizeData.currentPrice && (
-              <div className="bg-green-600 border border-green-700 rounded-lg p-3 mb-4 max-w-md">
+              {selectedSizeData && selectedSizeData.wasPrice && selectedSizeData.currentPrice && selectedSizeData.wasPrice > selectedSizeData.currentPrice && (
+              <div className="bg-green-600 border border-green-700 rounded-lg p-3 mb-3 max-w-md">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
@@ -1492,24 +1646,24 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               )}
               
             {/* Size and Pricing Section */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              <div className="flex items-start justify-between mb-3">
+            <div className="bg-gray-50 rounded-lg p-3 mb-3">
+              <div className="flex items-start justify-between mb-2">
                 {/* Left Side: Size Name and Pricing */}
                 <div className="flex-1">
                   {/* Size Name */}
-                  <div className="font-semibold text-lg text-gray-900 mb-2">{selectedSizeData.name}</div>
+                  <div className="font-semibold text-lg text-gray-900 mb-1">{selectedSizeData.name}</div>
                   
                   {/* Pricing - Now under the size name */}
                   <div className="space-y-1">
-                    <div className="text-sm text-gray-500 line-through">Was £{selectedSizeData.wasPrice.toFixed(2)}</div>
-                    <div className="text-2xl font-black text-orange-600">£{selectedSizeData.currentPrice.toFixed(2)}</div>
+                    <div className="text-sm text-gray-500 line-through">Was £{selectedSizeData.wasPrice > 0 ? selectedSizeData.wasPrice.toFixed(2) : '0.00'}</div>
+                    <div className="text-2xl font-black text-orange-600">£{selectedSizeData.currentPrice > 0 ? selectedSizeData.currentPrice.toFixed(2) : '0.00'}</div>
                   </div>
                 </div>
                 
                 {/* Right Side: Dimensions and Availability */}
                 <div className="text-right ml-4">
                   {/* Dimensions */}
-                  <div className="text-sm text-gray-600 mb-3">{selectedSizeData.dimensions}</div>
+                  <div className="font-semibold text-base sm:text-lg lg:text-xl text-gray-800 mb-2">{selectedSizeData.dimensions}</div>
                   
                   {/* Availability Status */}
                   <div className="flex items-center justify-end gap-2">
@@ -1538,53 +1692,38 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
               <div className="space-y-3">
                 <h3 className="font-semibold text-gray-800">Product Features</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-x-4 gap-y-2">
-                  {/* Left Column */}
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex-shrink-0"></div>
-                    <span className="text-sm text-gray-700 break-words">Medium-Firm</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">1000 Springs</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9 9 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Memory Foam</span>
-                  </div>
-                  
-                  {/* Right Column */}
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Pocket Spring</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518-4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Premium Quality</span>
-                  </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                      </svg>
-                    </div>
-                    <span className="text-sm text-gray-700 break-words">Fast Delivery</span>
-                  </div>
+                  {/* Dynamic features from product */}
+                  {product.features && product.features.length > 0 ? (
+                    product.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 min-w-0">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-gray-700 break-words">{feature}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-gray-700 break-words">{product.firmness || 'Medium-Firm'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-gray-700 break-words">{product.dimensions?.pocket_springs || '1000 Springs'}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -1593,6 +1732,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
             <ColorSelection 
               selectedColor={selectedColor}
               onColorChange={setSelectedColor}
+              colors={product.colors || ["Standard"]}
               className="mb-4"
             />
 
@@ -1730,7 +1870,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                 <span className="text-xs font-bold text-black">Klarna</span>
               </div>
               <div className="text-sm text-gray-700">
-                3 payments of <span className="font-semibold">£{(selectedSizeData.currentPrice / 3).toFixed(2)}</span> at 0% interest with <span className="font-semibold">Klarna</span>
+                3 payments of <span className="font-semibold">£{(selectedSizeData.currentPrice > 0 ? (selectedSizeData.currentPrice / 3).toFixed(2) : '0.00')}</span> at 0% interest with <span className="font-semibold">Klarna</span>
               </div>
             </div>
             <div className="text-sm text-primary underline cursor-pointer">Learn more</div>
@@ -1808,95 +1948,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       )}
 
-      {/* Review Modal */}
-      {reviewModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">Write a Review</h3>
-              <button
-                onClick={() => setReviewModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
 
-            {/* Review Form */}
-            <div className="p-6 space-y-6">
-              {/* Rating */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">Your Rating</label>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <button
-                      key={rating}
-                      className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-orange-400 transition-colors flex items-center justify-center"
-                    >
-                      <Star className="w-5 h-5 text-gray-400" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Review Title */}
-              <div>
-                <label htmlFor="reviewTitle" className="block text-sm font-medium text-gray-700 mb-2">
-                  Review Title
-                </label>
-                <input
-                  type="text"
-                  id="reviewTitle"
-                  placeholder="Summarize your experience"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                />
-              </div>
-
-              {/* Review Content */}
-              <div>
-                <label htmlFor="reviewContent" className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Review
-                </label>
-                <textarea
-                  id="reviewContent"
-                  rows={4}
-                  placeholder="Share your experience with this mattress..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none"
-                />
-              </div>
-
-              {/* Name */}
-              <div>
-                <label htmlFor="reviewerName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="reviewerName"
-                  placeholder="How should we display your name?"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                />
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => setReviewModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium">
-                  Submit Review
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Sticky Add to Basket Button - Sticks to bottom when scrolled past original button */}
       <div className={`lg:hidden transition-all duration-300 mobile-sticky-button ${
@@ -1907,7 +1959,7 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         <div className="relative group w-full max-w-full overflow-hidden">
           {/* Main Button Background with Orange Theme */}
           <button 
-            onClick={addToCart} 
+            onClick={() => setAddToBasketModalOpen(true)} 
             className="w-full max-w-full bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 text-white text-lg py-4 rounded-xl transition-all duration-300 flex items-center justify-center relative overflow-hidden shadow-lg border border-orange-400/20"
           >
             {/* Add to Basket Text */}
@@ -2165,176 +2217,97 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
         </div>
       )}
 
-      {/* Product Reviews */}
-      <div className="mt-8 sm:mt-12 border border-gray-200 rounded-xl p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-orange-50 to-blue-50">
-        <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Customer Reviews</h2>
-          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 sm:h-5 sm:w-5 ${i < 4 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                ))}
-              </div>
-              <span className="text-base sm:text-lg font-semibold text-gray-700">4.8</span>
-            </div>
-            <span className="text-gray-500">•</span>
-            <span className="text-sm sm:text-base text-gray-600">Based on 127 reviews</span>
-          </div>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">Real customers share their experience with the King Arthur Mattress</p>
-        </div>
 
-        {/* Review Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Review 1 */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center">
-                <span className="text-white font-semibold text-base sm:text-lg">S</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Sarah M.</h4>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 5 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                  ))}
+
+      {/* Add to Basket Top Strip */}
+      {addToBasketModalOpen && (
+        <div className="fixed top-0 left-0 right-0 z-[9999] bg-white/95 backdrop-blur-md border-b border-gray-200/60 shadow-lg transition-all duration-300 animate-in slide-in-from-top-2">
+          <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="flex items-center justify-between gap-4">
+              {/* Left Side - Product Info */}
+              <div className="flex items-center gap-4 flex-1 min-w-0">
+                {/* Product Image */}
+                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                    <img 
+                      src={selectedImage || product.image || "/placeholder.svg"} 
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                </div>
+
+                {/* Product Details */}
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-gray-900 text-sm truncate">{product.name}</h4>
+                  <div className="flex items-center gap-4 text-xs text-gray-600">
+                    <span className="truncate">{selectedSizeData.name}</span>
+                    <span className="truncate">{selectedSizeData.dimensions}</span>
+                </div>
+                  </div>
+                </div>
+
+              {/* Center - Quantity Controls */}
+              <div className="hidden md:flex items-center gap-3">
+                      <button 
+                        onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                  className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors disabled:opacity-40"
+                        disabled={quantity <= 1}
+                      >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                        </svg>
+                      </button>
+                <span className="text-sm font-semibold w-8 text-center">{quantity}</span>
+                      <button 
+                        onClick={() => setQuantity(quantity + 1)}
+                  className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                      >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                  </div>
+
+              {/* Right Side - Pricing and Actions */}
+              <div className="flex items-center gap-4 flex-shrink-0">
+                {/* Pricing */}
+                <div className="text-right hidden sm:block">
+                      {selectedSizeData.wasPrice && selectedSizeData.wasPrice > selectedSizeData.currentPrice && (
+                    <div className="text-xs text-gray-500 line-through">Was £{(selectedSizeData.wasPrice > 0 ? (selectedSizeData.wasPrice * quantity).toFixed(2) : '0.00')}</div>
+                      )}
+                  <div className="text-lg font-bold text-orange-600">£{(selectedSizeData.currentPrice > 0 ? (selectedSizeData.currentPrice * quantity).toFixed(2) : '0.00')}</div>
+                  </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setAddToBasketModalOpen(false)}
+                    className="px-3 py-1.5 text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200 text-xs"
+                    >
+                    Continue Shopping
+                    </button>
+                    
+                    <button 
+                      onClick={() => {
+                        // Navigate to cart page
+                        window.location.href = '/cart';
+                      }}
+                    className="px-4 py-1.5 bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600 text-white rounded-lg font-semibold transition-colors duration-200 text-xs flex items-center gap-1"
+                    >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+                      </svg>
+                    Go to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <p className="text-sm sm:text-base text-gray-700 mb-4">"Absolutely love this mattress! The medium-firm feel is perfect and the pocket springs provide amazing support. I wake up feeling refreshed every morning."</p>
-            <div className="text-xs sm:text-sm text-gray-500">Verified Purchase • 2 weeks ago</div>
-          </div>
-
-          {/* Review 2 */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center">
-                <span className="text-white font-semibold text-base sm:text-lg">M</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Michael R.</h4>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 4 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm sm:text-base text-gray-700 mb-4">"Great value for money! The memory foam layer is so comfortable and the delivery was super fast. My back pain has significantly improved."</p>
-            <div className="text-xs sm:text-sm text-gray-500">Verified Purchase • 1 month ago</div>
-          </div>
-
-          {/* Review 3 */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-green-400 to-teal-400 flex items-center justify-center">
-                <span className="text-white font-semibold text-base sm:text-lg">E</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Emma L.</h4>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 5 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm sm:text-base text-gray-700 mb-4">"Perfect mattress for our guest room! Guests always compliment how comfortable it is. The quality is excellent and it looks great too."</p>
-            <div className="text-xs sm:text-sm text-gray-500">Verified Purchase • 3 weeks ago</div>
-          </div>
-
-          {/* Review 4 */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-pink-400 to-red-400 flex items-center justify-center">
-                <span className="text-white font-semibold text-base sm:text-lg">D</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 text-sm sm:text-base">David K.</h4>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 4 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm sm:text-base text-gray-700 mb-4">"Switched from a much more expensive mattress and honestly prefer this one! The pocket springs are fantastic and it stays cool throughout the night."</p>
-            <div className="text-xs sm:text-sm text-gray-500">Verified Purchase • 2 months ago</div>
-          </div>
-
-          {/* Review 5 */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center">
-                <span className="text-white font-semibold text-base sm:text-lg">L</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Lisa P.</h4>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 5 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm sm:text-base text-gray-700 mb-4">"Best mattress I've ever owned! The combination of pocket springs and memory foam is perfect. No more tossing and turning at night."</p>
-            <div className="text-xs sm:text-sm text-gray-500">Verified Purchase • 1 week ago</div>
-          </div>
-
-          {/* Review 6 */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-indigo-400 to-blue-400 flex items-center justify-center">
-                <span className="text-white font-semibold text-base sm:text-lg">J</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 text-sm sm:text-base">James W.</h4>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < 4 ? "text-orange-500 fill-current" : "text-gray-300"}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm sm:text-base text-gray-700 mb-4">"Excellent mattress for the price! The quality is outstanding and it's incredibly comfortable. Highly recommend to anyone looking for a great mattress."</p>
-            <div className="text-xs sm:text-sm text-gray-500">Verified Purchase • 1 month ago</div>
           </div>
         </div>
+      )}
 
-        {/* Review Stats */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">98%</div>
-            <div className="text-xs sm:text-sm text-gray-600">Would Recommend</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">4.8/5</div>
-            <div className="text-xs sm:text-sm text-gray-600">Average Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">127</div>
-            <div className="text-xs sm:text-sm text-gray-600">Total Reviews</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">5★</div>
-            <div className="text-xs sm:text-sm text-gray-600">Most Common</div>
-          </div>
-        </div>
 
-        {/* Write Review Button */}
-        <div className="text-center mt-6 sm:mt-8">
-          <button 
-            onClick={() => setReviewModalOpen(true)}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2 mx-auto text-sm sm:text-base"
-          >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            Write a Review
-          </button>
-        </div>
+
       </div>
-    </div>
     </>
   )
 }

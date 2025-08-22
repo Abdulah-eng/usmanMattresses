@@ -1,3 +1,5 @@
+"use client"
+
 import { ProductsLayout } from "@/components/products-layout"
 
 export default function PillowsPage() {

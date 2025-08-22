@@ -1,7 +1,12 @@
-import { Snowflake, Waves, ArrowUp, Dumbbell } from 'lucide-react'
+"use client"
+
+import { Snowflake, Waves, ArrowUp, Dumbbell, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
+import { useState } from 'react'
 
 export function CategoryFilterCards() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  
   const categories = [
     {
       id: 1,
@@ -50,23 +55,24 @@ export function CategoryFilterCards() {
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-left">
+        <h2 className="text-3xl font-bold text-black mb-4 text-left font-display">
           Shop by Comfort & Support
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <p className="text-lg text-gray-700 mb-8 text-left max-w-3xl font-modern">
+          Because the right comfort means better sleep, brighter mornings, and healthier days.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {categories.map((category) => (
-            <Card 
-              key={category.id} 
-              className="bg-white hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-gray-100 hover:border-orange-200"
-            >
-              <CardContent className="p-6 text-center">
-                <div className="flex justify-center mb-4">
+            <Card key={category.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200 hover:border-orange-300">
+              <CardContent className="p-4 text-center">
+                <div className="flex justify-center mb-3">
                   {category.icon}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm">
+                <h3 className="font-semibold text-black mb-2 text-sm font-display">
                   {category.title}
                 </h3>
-                <p className="text-orange-600 text-xs font-medium">
+                <p className="text-gray-600 text-xs font-modern">
                   {category.items}
                 </p>
               </CardContent>

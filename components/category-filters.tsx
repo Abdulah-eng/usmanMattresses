@@ -22,36 +22,36 @@ export function CategoryFilters({ category, onFiltersChange }: CategoryFiltersPr
     mattresses: {
       "Mattress Type": ["Memory Foam", "Innerspring", "Hybrid", "Latex", "Adjustable"],
       "Firmness": ["Soft", "Medium", "Firm", "Extra Firm"],
-      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King"],
+      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King", "Split King"],
       "Features": ["Cooling", "Motion Isolation", "Edge Support", "Organic", "Hypoallergenic"],
       "Brand": ["Tempur-Pedic", "Sealy", "Serta", "Purple", "Casper"]
     },
+    beds: {
+      "Bed Type": ["Platform Bed", "Storage Bed", "Canopy Bed", "Four Poster", "Sleigh Bed"],
+      "Material": ["Wood", "Metal", "Upholstered", "Leather", "Fabric"],
+      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King", "Split King"],
+      "Style": ["Modern", "Traditional", "Industrial", "Rustic", "Contemporary"],
+      "Brand": ["Zinus", "Ashley", "Modway", "Novogratz"]
+    },
+    sofas: {
+      "Sofa Type": ["Sectional", "Loveseat", "Sleeper Sofa", "Recliner", "Chesterfield"],
+      "Material": ["Fabric", "Leather", "Velvet", "Linen"],
+      "Size": ["Small", "Medium", "Large", "Extra Large"],
+      "Color": ["Gray", "Blue", "Black", "White", "Beige", "Green"],
+      "Brand": ["Ashley", "Modway", "Zinus", "Novogratz"]
+    },
     pillows: {
-      "Pillow Type": ["Memory Foam", "Down", "Down Alternative", "Latex", "Cooling Gel"],
+      "Pillow Type": ["Memory Foam", "Down", "Feather", "Latex", "Buckwheat"],
       "Firmness": ["Soft", "Medium", "Firm"],
       "Size": ["Standard", "Queen", "King"],
-      "Features": ["Cooling", "Hypoallergenic", "Adjustable", "Cervical Support"],
-      "Fill Material": ["Memory Foam", "Down", "Polyester", "Latex", "Gel"]
+      "Features": ["Cooling", "Hypoallergenic", "Adjustable"],
+      "Brand": ["Tempur-Pedic", "Casper", "Purple"]
     },
-    bedding: {
-      "Product Type": ["Sheets", "Comforters", "Mattress Protectors", "Pillowcases", "Blankets"],
-      "Material": ["Cotton", "Bamboo", "Microfiber", "Linen", "Silk"],
-      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King"],
-      "Features": ["Waterproof", "Cooling", "Hypoallergenic", "Organic", "Wrinkle-Free"],
-      "Thread Count": ["200-400", "400-600", "600-800", "800+"]
-    },
-    "adjustable-bases": {
-      "Base Type": ["Basic", "Premium", "Luxury", "Massage", "Smart"],
-      "Size": ["Twin XL", "Full", "Queen", "King", "Split King"],
-      "Features": ["Massage", "USB Ports", "Wireless Remote", "Zero Gravity", "Anti-Snore"],
-      "Brand": ["Tempur-Pedic", "Purple", "Sleep Number", "Reverie", "Leggett & Platt"]
-    },
-    "box-springs": {
-      "Product Type": ["Box Springs", "Platform Beds", "Bed Frames", "Foundations"],
-      "Material": ["Wood", "Metal", "Upholstered", "Steel"],
-      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King"],
-      "Features": ["Storage", "Low Profile", "Split", "Adjustable Height"],
-      "Style": ["Modern", "Traditional", "Industrial", "Rustic"]
+    accessories: {
+      "Accessory Type": ["Mattress Protector", "Topper", "Sheets", "Duvet Cover", "Pillowcase"],
+      "Material": ["Cotton", "Bamboo", "Tencel", "Microfiber"],
+      "Features": ["Waterproof", "Cooling", "Hypoallergenic"],
+      "Brand": ["Malouf", "Protect-A-Bed"]
     }
   }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CategoryFilters } from "@/components/category-filters"
 import { ProductGrid } from "@/components/product-grid"
 import { PopularCategories } from "@/components/popular-categories"
@@ -14,6 +14,7 @@ interface ProductsLayoutProps {
 
 export function ProductsLayout({ category }: ProductsLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [productCount, setProductCount] = useState(0)
   const [filters, setFilters] = useState<Record<string, any>>({
     priceRange: [0, 2000],
     'Mattress Type': [],
@@ -33,15 +34,36 @@ export function ProductsLayout({ category }: ProductsLayoutProps) {
   })
   const [sortBy, setSortBy] = useState("popular")
 
+  // Fetch product count for the category
+  useEffect(() => {
+    const fetchProductCount = async () => {
+      try {
+        const response = await fetch(`/api/products?category=${encodeURIComponent(category)}`)
+        if (response.ok) {
+          const data = await response.json()
+          setProductCount(data.products?.length || 0)
+        }
+      } catch (error) {
+        console.error('Error fetching product count:', error)
+        setProductCount(0)
+      }
+    }
+
+    fetchProductCount()
+  }, [category])
+
   const categoryTitles: Record<string, string> = {
     mattresses: "Mattresses",
     beds: "Beds",
+    "bed-frames": "Bed Frames",
     sofas: "Sofas",
     "bunk-beds": "Bunk Beds",
     pillows: "Pillows",
     bedding: "Bedding",
     "adjustable-bases": "Adjustable Bases",
     "box-springs": "Box Springs & Bed Bases",
+    toppers: "Mattress Toppers",
+    kids: "Kids Furniture & Bedding",
     sale: "Sale & Clearance"
   }
 
@@ -64,12 +86,12 @@ export function ProductsLayout({ category }: ProductsLayoutProps) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{categoryTitles[category] || "Products"}</h1>
-          <p className="text-sm text-gray-500">17 items</p> {/* Placeholder for item count */}
+          <p className="text-sm text-gray-500">{productCount} items</p>
         </div>
         
         <Button
           variant="outline"
-          className="lg:hidden"
+          className="lg:hidden border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           <Filter className="h-4 w-4 mr-2" />

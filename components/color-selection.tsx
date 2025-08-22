@@ -18,7 +18,7 @@ export function ColorSelection({
   return (
     <div className={`border border-gray-200 rounded-lg p-4 bg-white shadow-sm ${className}`}>
       <div className="space-y-3">
-        <h3 className="font-semibold text-gray-800">Select Colour</h3>
+        <h3 className="font-semibold text-gray-800">Choose Option</h3>
         <div className="flex gap-3">
           {colors.map((color) => (
             <button

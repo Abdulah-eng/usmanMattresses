@@ -1,287 +1,233 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useMounted } from "@/hooks/use-mobile"
+import { useState } from "react"
 import Link from "next/link"
-import { Menu, Search, ShoppingCart, Heart, X, Phone, MapPin, Truck, ChevronDown, Star } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Search, ShoppingCart, Heart, Mail, X, Truck, HeadphonesIcon, ArrowRight, Instagram, Facebook, Youtube, Package, Car, RotateCcw, CreditCard, ChevronDown } from 'lucide-react'
 import { Input } from "@/components/ui/input"
+import { Sora } from 'next/font/google'
 import { useCart } from "@/lib/cart-context"
-import { MegaMenu } from "@/components/mega-menu"
+
+const sora = Sora({ subsets: ['latin'], weight: ['800'] })
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
-  const [timeLeft, setTimeLeft] = useState({
-    days: 1,
-    hours: 4,
-    minutes: 48,
-    seconds: 0
-  })
-  const mounted = useMounted()
   const { state } = useCart()
 
-  // Countdown timer effect - only run on client
-  useEffect(() => {
-    if (!mounted) return
-    
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 }
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
-        } else if (prev.days > 0) {
-          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
-        }
-        return prev
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [mounted])
-
-  const navigationItems = [
-    { name: "Mattresses", href: "/mattresses", key: "mattresses" },
-    { name: "Adjustable Bases", href: "/adjustable-bases", key: "adjustable-bases" },
-    { name: "Pillows", href: "/pillows", key: "pillows" },
-    { name: "Bedding", href: "/bedding", key: "bedding" },
-    { name: "Box Springs & Bed Bases", href: "/box-springs", key: "box-springs" }
-  ]
-
   return (
-    <header className="bg-white shadow-sm relative z-50 overflow-hidden">
-      {/* Sales Banner */}
-      <div className="bg-[#dc2626] text-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-center py-2 text-xs sm:text-sm font-medium gap-2 sm:gap-4">
-            <span className="text-center sm:text-left break-words">UP TO 50% OFF - MID WEEK SAVINGS | ENDS IN</span>
-            {mounted ? (
-              <div className="flex items-center space-x-1 sm:space-x-2">
-                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black text-xs sm:text-sm">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                </div>
-                <span className="text-white font-medium text-xs sm:text-sm">HOURS</span>
-                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black text-xs sm:text-sm">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                </div>
-                <span className="text-white font-medium text-xs sm:text-sm">MINS</span>
-                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black text-xs sm:text-sm">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-                </div>
-                <span className="text-white font-medium text-xs sm:text-sm">SECS</span>
+    <header className="relative z-50">
+      {/* Top Bar - Dark Grey */}
+      <div className="text-white border-b-2 border-gray-600" style={{ backgroundColor: '#33373E' }}>
+        <div className="px-2">
+          <div className="flex items-center justify-between py-2 text-sm">
+            {/* Left Side - Navigation Links */}
+            <div className="flex items-center space-x-4">
+              <Link href="/contact" className="hover:text-orange-400 transition-colors">Contact</Link>
+              <div className="w-px h-4 bg-white"></div>
+              <Link href="/reviews" className="hover:text-orange-400 transition-colors">Reviews</Link>
+              <div className="w-px h-4 bg-white"></div>
+              <Link href="/support" className="hover:text-orange-400 transition-colors">Support</Link>
+            </div>
+            
+            {/* Right Side - Email and Social Icons */}
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>contact@davicishop.com</span>
               </div>
-            ) : (
-              <div className="flex items-center space-x-1 sm:space-x-2">
-                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black text-xs sm:text-sm">01</span>
-                </div>
-                <span className="text-white font-medium text-xs sm:text-sm">DAYS</span>
-                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black text-xs sm:text-sm">04</span>
-                </div>
-                <span className="text-white font-medium text-xs sm:text-sm">HOURS</span>
-                <div className="bg-white rounded-lg px-1 sm:px-2 py-1 shadow-sm">
-                  <span className="font-bold text-black text-xs sm:text-sm">48</span>
-                </div>
-                <span className="text-white font-medium text-xs sm:text-sm">MINS</span>
-              </div>
-            )}
+              <div className="w-px h-4 bg-white"></div>
+              <a href="#" className="hover:text-orange-400 transition-colors">
+                <X className="w-4 h-4" />
+              </a>
+              <a href="#" className="hover:text-orange-400 transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="#" className="hover:text-orange-400 transition-colors">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="hover:text-orange-400 transition-colors">
+                <Youtube className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Header */}
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between py-4 gap-4 sm:gap-0">
-          {/* Search Bar - Left */}
-          <div className="hidden md:flex items-center flex-1 max-w-md">
-            <div className="relative w-full">
-              <Input
-                type="search"
-                placeholder="Search for your bedroom upgrade...."
-                className="w-full pr-12 border-gray-300 rounded-lg"
-              />
-              <Button 
-                size="sm" 
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-800 hover:bg-blue-900 rounded-full h-8 w-8 p-0"
-              >
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Logo - Center */}
-          <div className="flex-1 flex justify-center order-1 sm:order-2">
-            <Link href="/" className="text-2xl sm:text-3xl font-bold text-blue-800 font-serif text-center">
-              MattressKing™
+      {/* Main Header - Dark Grey Background */}
+      <div className="text-white" style={{ backgroundColor: '#33373E' }}>
+        <div className="px-2">
+          <div className="flex items-center justify-between py-6">
+            {/* Left: DAVICI Logo */}
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-orange-500 rounded-full border-2 border-orange-400 flex items-center justify-center">
+                <span className="text-white font-bold text-xl">B</span>
+              </div>
+              <span className={`${sora.className} text-3xl font-extrabold tracking-tight`}>Bedora Living</span>
             </Link>
-          </div>
 
-          {/* Account/Basket - Right */}
-          <div className="flex items-center gap-4 sm:gap-6 order-2 sm:order-3">
-            <div className="hidden md:flex flex-col items-end text-sm">
-              <Link href="/track-order" className="text-blue-900 hover:text-blue-700 break-words">Track Order</Link>
-              <Link href="/account" className="text-blue-900 hover:text-blue-700 break-words">My Account</Link>
-              <Link href="/signin" className="text-blue-900 hover:text-blue-700 break-words">Sign In / Register</Link>
-            </div>
-            
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Link href="/cart">
-                <Button variant="ghost" size="sm" className="relative text-blue-800 hover:text-blue-700">
-                  <ShoppingCart className="h-5 w-5 mr-1" />
-                  <div className="hidden sm:flex flex-col items-start">
-                    <span className="text-xs">BASKET</span>
-                    <span className="font-medium">£{state.total.toFixed(2)}</span>
-                  </div>
-                  <div className="sm:hidden">
-                    <span className="font-medium">£{state.total.toFixed(2)}</span>
-                  </div>
-                  {state.itemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {state.itemCount}
-                    </span>
-                  )}
-                </Button>
-              </Link>
-
-              {/* Mobile menu button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Bar - Full Width */}
-      <div className="bg-blue-800 text-white w-full overflow-hidden">
-        <div className="px-4">
-          <nav className="hidden md:flex items-center justify-between py-3">
-            <div className="flex items-center space-x-4 lg:space-x-8 min-w-0">
-              {navigationItems.map((item) => (
-                <div
-                  key={item.name}
-                  className="relative"
-                  onMouseEnter={() => setActiveMegaMenu(item.key)}
-                  onMouseLeave={() => setActiveMegaMenu(null)}
-                >
-                  <Link
-                    href={item.href}
-                    className="flex items-center text-white hover:text-gray-200 font-medium py-2 text-sm lg:text-base"
-                  >
-                    <span className="break-words">{item.name}</span>
-                    <ChevronDown className="ml-1 h-4 w-4 flex-shrink-0" />
-                  </Link>
-                </div>
-              ))}
-            </div>
-            
-            <div className="flex items-center space-x-4 lg:space-x-8 min-w-0">
-              <Link href="/sale" className="text-white hover:text-gray-200 font-medium py-2 flex items-center text-sm lg:text-base">
-                🏷️ Sale
-              </Link>
-              
-              <Link href="/mattress-guide" className="text-white hover:text-gray-200 font-medium py-2 text-sm lg:text-base break-words">
-                Mattress Guide
-              </Link>
-              
-              <Link href="/mattress-finder" className="text-white hover:text-gray-200 font-medium py-2 flex items-center text-sm lg:text-base break-words">
-                🧭 Mattress Finder Quiz
-              </Link>
-            </div>
-          </nav>
-
-          {/* Mega Menu */}
-          <div
-            onMouseEnter={() => {/* Keep mega menu open */}}
-            onMouseLeave={() => setActiveMegaMenu(null)}
-          >
-            {navigationItems.map((item) => (
-              <MegaMenu
-                key={item.key}
-                category={item.key}
-                isVisible={activeMegaMenu === item.key}
-                onClose={() => setActiveMegaMenu(null)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Trust Banner */}
-      <div className="bg-orange-50 py-3 w-full overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm text-blue-800 gap-2 sm:gap-4">
-            <div className="flex items-center justify-center sm:justify-start min-w-0">
-              <Star className="h-4 w-4 text-yellow-500 mr-1 flex-shrink-0" />
-              <span className="break-words">Trustpilot ★★★★ Rated Excellent</span>
-            </div>
-            <div className="text-center sm:text-left break-words">Buy today, delivered tomorrow</div>
-            <div className="text-center sm:text-left break-words">Klarna. Buy now & pay later available</div>
-            <div className="text-center sm:text-left break-words">5 Year manufacturer's guarantee</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden py-4 border-t border-gray-200 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex flex-col space-y-4">
-              <div className="mb-4">
+            {/* Center: Search Bar with Category Dropdown */}
+            <div className="w-[600px] ml-auto mr-8">
+              <div className="flex items-center bg-white rounded-md overflow-hidden">
                 <Input
                   type="search"
-                  placeholder="Search for your bedroom upgrade...."
-                  className="w-full"
+                  placeholder="Search..."
+                  className="flex-1 border-0 focus:ring-0 text-gray-900 placeholder:text-gray-500"
                 />
+                <div className="flex items-center border-l border-gray-200">
+                  <select className="px-4 py-2 text-gray-700 bg-transparent border-0 focus:ring-0 focus:outline-none">
+                    <option>All Category</option>
+                    <option>Mattresses</option>
+                    <option>Beds</option>
+                    <option>Sofas</option>
+                    <option>Pillows</option>
+                    <option>Toppers</option>
+                    <option>Bunkbeds</option>
+                    <option>Kids</option>
+                  </select>
+                  <div className="w-px h-6 bg-gray-200"></div>
+                  <div className="px-2 py-1">
+                    <button className="px-6 py-2 bg-orange-500 hover:bg-orange-600 transition-colors flex items-center justify-center min-w-[56px] rounded-sm">
+                      <Search className="w-5 h-5 text-white" />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col space-y-2 text-sm">
-                <Link href="/contact" className="text-blue-800 hover:text-blue-700 break-words">Contact Us</Link>
-                <Link href="/about" className="text-blue-800 hover:text-blue-700 break-words">About</Link>
+            </div>
+
+            {/* Right: Info Boxes and User Icons */}
+            <div className="flex items-center space-x-6">
+              {/* Free Shipping Box */}
+              <div className="flex items-center space-x-3 border border-white rounded-lg p-3">
+                <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-sm">
+                  <div className="font-semibold">FREE SHIPPING</div>
+                  <div className="text-gray-300">over order $120</div>
+                </div>
               </div>
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="font-medium text-gray-900 hover:text-blue-800 break-words"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
+
+              {/* Call Us Box */}
+              <div className="flex items-center space-x-3 border border-white rounded-lg p-3">
+                <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <HeadphonesIcon className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-sm">
+                  <div className="font-semibold">CALL US FREE</div>
+                  <div className="text-gray-300">+1 86.36.166</div>
+                </div>
+              </div>
+
+              {/* User Icons */}
+              <div className="flex items-center space-x-4">
+                <Link href="/login" className="flex items-center space-x-2 hover:text-orange-400 transition-colors">
+                  <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                  <span className="text-sm">Login</span>
                 </Link>
-              ))}
-              <Link
-                href="/sale"
-                className="font-medium text-gray-700 hover:text-blue-800 break-words"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                🏷️ Sale
+                
+                <Link href="/wishlist" className="hover:text-orange-400 transition-colors">
+                  <Heart className="w-6 h-6" />
+                </Link>
+                
+                <Link href="/cart" className="relative hover:text-orange-400 transition-colors">
+                  <ShoppingCart className="w-6 h-6" />
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">0</span>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* First Navigation Bar - Dark Grey with Product Categories */}
+      <div className="text-white" style={{ backgroundColor: '#33373E' }}>
+        <div className="px-2">
+          <div className="flex items-center justify-center py-3">
+            <div className="flex items-center gap-8 text-sm font-medium">
+              <Link href="/mattresses" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Mattresses <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/beds" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Beds <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/sofas" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Sofas <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/pillows" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Pillows <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/toppers" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Toppers <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/bunkbeds" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Bunkbeds <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/kids" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Kids <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/guides" className="group flex items-center gap-1 hover:text-orange-400 transition-colors">Guides <ChevronDown className="w-4 h-4 text-gray-300 group-hover:text-orange-400" /></Link>
+              <Link href="/sale" className="flex items-center space-x-2 rounded-lg p-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-white" />
+                </div>
+                <div className="leading-5">
+                  <div className="text-sm font-semibold">SALES & CLEARANCE</div>
+                  <div className="text-xs text-gray-300">discount up to 60%</div>
+                </div>
               </Link>
-              <Link
-                href="/mattress-guide"
-                className="font-medium text-gray-700 hover:text-blue-800 break-words"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Mattress Guide
-              </Link>
-              <Link
-                href="/mattress-finder"
-                className="font-medium text-gray-700 hover:text-blue-800 break-words"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                🧭 Mattress Finder Quiz
+              <Link href="/mattress-finder" className="flex items-center space-x-2 rounded-lg p-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <Search className="w-4 h-4 text-white" />
+                </div>
+                <div className="leading-5">
+                  <div className="text-sm font-semibold">MATTRESS QUIZ</div>
+                  <div className="text-xs text-gray-300">find your perfect match</div>
+                </div>
               </Link>
             </div>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Second Navigation Bar - Light Grey with Promotional Information */}
+      <div className="text-gray-800" style={{ backgroundColor: '#F5F5F5' }}>
+        <div className="px-2">
+          <div className="flex items-center justify-center py-1">
+            <div className="grid grid-cols-4 gap-8 w-full max-w-6xl">
+              {/* Click + Collect */}
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                  <Package className="w-2.5 h-2.5 text-white" />
+                </div>
+                <div className="text-xs">
+                  <div className="font-medium">Click + Collect now in as little as 15 minutes*</div>
+                  <div className="text-xs text-gray-600">*Restrictions apply</div>
+                </div>
+              </div>
+
+              {/* Free Delivery */}
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                  <Car className="w-2.5 h-2.5 text-white" />
+                </div>
+                <div className="text-xs">
+                  <div className="font-medium">Free delivery on 1000s of products</div>
+                  <div className="text-xs text-gray-600">Selected products/locations</div>
+                </div>
+              </div>
+
+              {/* 90 Day Returns */}
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                  <RotateCcw className="w-2.5 h-2.5 text-white" />
+                </div>
+                <div className="text-xs">
+                  <div className="font-medium">90 day returns policy</div>
+                </div>
+              </div>
+
+              {/* Join B&Q Club */}
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                  <CreditCard className="w-2.5 h-2.5 text-white" />
+                </div>
+                <div className="text-xs">
+                  <div className="font-medium">Join B&Q Club</div>
+                  <div className="text-xs text-gray-600">Save up to £100 a year ▲</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
   )
 }

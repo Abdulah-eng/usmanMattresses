@@ -7,7 +7,7 @@ import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { SlidersHorizontal, Bed, DollarSign, Waves, Store, Tag, ChevronDown } from 'lucide-react'
+import { SlidersHorizontal, Bed, DollarSign, Waves, Store, Tag, ChevronDown, Filter } from 'lucide-react'
 
 interface HorizontalFilterBarProps {
   category: string
@@ -29,21 +29,32 @@ export function HorizontalFilterBar({
 
   const filterOptions: Record<string, Record<string, string[]>> = {
     mattresses: {
-      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King"],
+      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King", "Split King"],
       "Feels": ["Soft", "Medium", "Firm", "Extra Firm"],
+    },
+    beds: {
+      "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King", "Split King"],
+      "Style": ["Modern", "Traditional", "Industrial", "Rustic", "Contemporary"],
+    },
+    sofas: {
+      "Size": ["Small", "Medium", "Large", "Extra Large"],
+      "Style": ["Modern", "Traditional", "Scandinavian", "Industrial", "Bohemian"],
     },
     pillows: {
       "Size": ["Standard", "Queen", "King"],
-      "Feels": ["Soft", "Medium", "Firm"],
+      "Style": ["Modern", "Traditional", "Luxury", "Minimalist"],
     },
     bedding: {
       "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King"],
+      "Style": ["Modern", "Traditional", "Luxury", "Minimalist"],
     },
     "adjustable-bases": {
       "Size": ["Twin XL", "Full", "Queen", "King", "Split King"],
+      "Style": ["Modern", "Traditional", "Luxury", "Minimalist"],
     },
     "box-springs": {
       "Size": ["Twin", "Twin XL", "Full", "Queen", "King", "California King"],
+      "Style": ["Modern", "Traditional", "Industrial", "Rustic"],
     }
   }
 
@@ -68,21 +79,23 @@ export function HorizontalFilterBar({
   return (
     <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
       <div className="flex items-center gap-3 flex-wrap">
-        <Button 
-          className="bg-blue-900 hover:bg-blue-800 text-white px-6 py-2 rounded-full flex items-center gap-2"
+        {/* All Filters Button - Blue with white icon */}
+        <Button
           onClick={onOpenAllFilters}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 shadow-sm hover:shadow-md"
         >
-          <SlidersHorizontal className="h-4 w-4" />
+          <SlidersHorizontal className="w-4 h-4 mr-2" />
           All Filters
         </Button>
 
+        {/* Size Filter */}
         {currentCategoryFilters["Size"] && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="px-6 py-2 rounded-full flex items-center gap-2">
-                <Bed className="h-4 w-4" />
+              <Button variant="outline" className="px-6 py-2 rounded-lg flex items-center gap-2 border-gray-200 hover:border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                <Bed className="h-4 w-4 text-blue-600" />
                 Size
-                <ChevronDown className="ml-1 h-4 w-4" />
+                <ChevronDown className="ml-1 h-4 w-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-4">
@@ -102,12 +115,13 @@ export function HorizontalFilterBar({
           </DropdownMenu>
         )}
 
+        {/* Price Filter */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="px-6 py-2 rounded-full flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
+            <Button variant="outline" className="px-6 py-2 rounded-lg flex items-center gap-2 border-gray-200 hover:border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+              <DollarSign className="h-4 w-4 text-blue-600" />
               Price
-              <ChevronDown className="ml-1 h-4 w-4" />
+              <ChevronDown className="ml-1 h-4 w-4 text-gray-500" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="p-4 w-64">
@@ -120,19 +134,20 @@ export function HorizontalFilterBar({
               className="w-full"
             />
             <div className="flex justify-between text-sm text-gray-600 mt-2">
-              <span>${filters.priceRange ? filters.priceRange[0] : 0}</span>
-              <span>${filters.priceRange ? filters.priceRange[1] : 2000}</span>
+              <span>£{filters.priceRange ? filters.priceRange[0] : 0}</span>
+              <span>£{filters.priceRange ? filters.priceRange[1] : 2000}</span>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Feels Filter */}
         {currentCategoryFilters["Feels"] && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="px-6 py-2 rounded-full flex items-center gap-2">
-                <Waves className="h-4 w-4" />
+              <Button variant="outline" className="px-6 py-2 rounded-lg flex items-center gap-2 border-gray-200 hover:border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                <Waves className="h-4 w-4 text-blue-600" />
                 Feels
-                <ChevronDown className="ml-1 h-4 w-4" />
+                <ChevronDown className="ml-1 h-4 w-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-4">
@@ -152,18 +167,28 @@ export function HorizontalFilterBar({
           </DropdownMenu>
         )}
 
+        {/* In-store Filter */}
         <Button 
           variant={filters["In-store"] ? "default" : "outline"} 
-          className={`px-6 py-2 rounded-full flex items-center gap-2 ${filters["In-store"] ? 'bg-blue-900 hover:bg-blue-800 text-white' : ''}`}
+          className={`px-6 py-2 rounded-lg flex items-center gap-2 ${
+            filters["In-store"] 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'border-gray-200 hover:border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          }`}
           onClick={() => handleToggleFilterChange("In-store")}
         >
           <Store className="h-4 w-4" />
           In-store
         </Button>
 
+        {/* Sale Filter */}
         <Button 
           variant={filters["Sale"] ? "default" : "outline"} 
-          className={`px-6 py-2 rounded-full flex items-center gap-2 ${filters["Sale"] ? 'bg-blue-900 hover:bg-blue-800 text-white' : ''}`}
+          className={`px-6 py-2 rounded-lg flex items-center gap-2 ${
+            filters["Sale"] 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'border-gray-200 hover:border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          }`}
           onClick={() => handleToggleFilterChange("Sale")}
         >
           <Tag className="h-4 w-4" />
@@ -171,18 +196,29 @@ export function HorizontalFilterBar({
         </Button>
       </div>
 
+      {/* Sort by Section */}
       <div className="flex items-center gap-2">
-        <span className="text-gray-600">Sort by:</span>
+        <Label className="text-sm font-medium text-black">Sort by:</Label>
         <Select value={sortBy} onValueChange={onSortByChange}>
-          <SelectTrigger className="w-36 rounded-full">
-            <SelectValue placeholder="Popular" />
+          <SelectTrigger className="w-40 border-gray-200 hover:border-gray-300 focus:border-blue-500 bg-white">
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="popular">Popular</SelectItem>
-            <SelectItem value="newest">Newest</SelectItem>
-            <SelectItem value="price-low">Price: Low to High</SelectItem>
-            <SelectItem value="price-high">Price: High to Low</SelectItem>
-            <SelectItem value="rating">Highest Rated</SelectItem>
+            <SelectItem value="relevance" className="text-black hover:bg-gray-50 focus:bg-gray-100 focus:text-black">
+              Relevance
+            </SelectItem>
+            <SelectItem value="popular" className="text-black hover:bg-gray-50 focus:bg-gray-100 focus:text-black">
+              Popular
+            </SelectItem>
+            <SelectItem value="price-low" className="text-black hover:bg-gray-50 focus:bg-gray-100 focus:text-black">
+              Price, low to high
+            </SelectItem>
+            <SelectItem value="price-high" className="text-black hover:bg-gray-50 focus:bg-gray-100 focus:text-black">
+              Price, high to low
+            </SelectItem>
+            <SelectItem value="sale" className="text-black hover:bg-gray-50 focus:bg-gray-100 focus:text-black">
+              Sale
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -194,7 +194,7 @@ export function ProductGrid({ category, filters, sortBy }: ProductGridProps) {
               key={page}
               variant={page === currentPage ? "default" : "outline"}
               onClick={() => setCurrentPage(page)}
-                              className={page === currentPage ? "bg-blue-900 hover:bg-blue-800" : ""}
+              className={page === currentPage ? "bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600" : ""}
             >
               {page}
             </Button>
