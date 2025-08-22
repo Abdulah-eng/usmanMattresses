@@ -1021,6 +1021,9 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                           </p>
                         </div>
                         
+                        {/* Divider */}
+                        <div className="border-t border-gray-200 my-8"></div>
+                        
                         {/* Premium Sleep Technology Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                           <div className="order-2 lg:order-1">
@@ -1045,6 +1048,9 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                           </div>
                         </div>
                         
+                        {/* Divider */}
+                        <div className="border-t border-gray-200 my-8"></div>
+                        
                         {/* Superior Comfort Features Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                           <div className="relative h-64 lg:h-80 rounded-xl overflow-hidden bg-gray-100">
@@ -1068,6 +1074,9 @@ export function ProductDetailHappy({ product }: ProductDetailHappyProps) {
                             </p>
                           </div>
                         </div>
+                        
+                        {/* Divider */}
+                        <div className="border-t border-gray-200 my-8"></div>
                         
                         {/* Quality Assurance Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
