@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category')
     const limit = searchParams.get('limit')
     const featured = searchParams.get('featured')
+    const id = searchParams.get('id')
     
     // Health check endpoint
     if (category === 'health') {
@@ -64,13 +65,20 @@ export async function GET(req: NextRequest) {
           logo
         )
       `)
-      .order('created_at', { ascending: false })
+
+    // If fetching by ID, get specific product
+    if (id) {
+      query = query.eq('id', id)
+    } else {
+      // Otherwise, get all products with ordering
+      query = query.order('created_at', { ascending: false })
+    }
 
     if (featured === 'true') {
       query = query.eq('featured', true)
     }
 
-    if (limit) {
+    if (limit && !id) {
       query = query.limit(parseInt(limit))
     }
 
@@ -119,7 +127,7 @@ export async function GET(req: NextRequest) {
       monthlyPrice: product.monthly_price ? Number(product.monthly_price) : undefined,
       images: product.images || [],
       category: category,
-      type: product.mattress_type || product.bed_type || product.sofa_type || product.pillow_type || 'Standard',
+      type: product.mattress_type || product.bed_type || product.sofa_type || product.pillow_type || product.topper_type || product.bunk_bed_type || 'Standard',
       size: product.sizes?.[0] || 'Queen',
       comfortLevel: product.firmness_description || 'Medium',
       inStore: Boolean(product.in_stock !== false),
@@ -132,26 +140,40 @@ export async function GET(req: NextRequest) {
       dimensions: product.dimensions,
       dispatchTime: product.dispatch_time,
       reasonsToBuy: product.reasons_to_buy,
-      productQuestions: product.product_questions,
-      warrantyInfo: product.warranty_info,
-      careInstructions: product.care_instructions,
-      careImage: product.care_image,
-      stockQuantity: product.stock_quantity,
-      inStock: Boolean(product.in_stock),
-      // Filter fields
-      filterMattressType: product.filter_mattress_type,
-      filterFirmness: product.filter_firmness,
-      filterSizes: product.filter_sizes,
-      filterFeatures: product.filter_features,
-      filterBrand: product.filter_brand,
-      filterMaterial: product.filter_material,
-      filterMinPrice: product.filter_min_price,
-      filterMaxPrice: product.filter_max_price,
-      filterInStore: Boolean(product.filter_in_store),
-      filterOnSale: Boolean(product.filter_on_sale)
+      // Database-specific fields
+      original_price: product.original_price,
+      current_price: product.current_price,
+      savings: product.savings,
+      free_delivery: product.free_delivery,
+      setup_service: product.setup_service,
+      setup_cost: product.setup_cost,
+      firmness_description: product.firmness_description,
+      firmness_level: product.firmness_level,
+      mattress_type: product.mattress_type,
+      bed_type: product.bed_type,
+      sofa_type: product.sofa_type,
+      pillow_type: product.pillow_type,
+      topper_type: product.topper_type,
+      bunk_bed_type: product.bunk_bed_type,
+      product_questions: product.product_questions,
+      warranty_info: product.warranty_info,
+      care_instructions: product.care_instructions,
+      stock_quantity: product.stock_quantity,
+      in_stock: product.in_stock,
+      on_sale: product.on_sale,
+      dispatch_time: product.dispatch_time,
+      short_description: product.short_description,
+      long_description: product.long_description,
+      review_count: product.review_count,
+      monthly_price: product.monthly_price,
+      main_image: product.main_image
     })) || []
 
-    return NextResponse.json({ products: transformedProducts })
+    return NextResponse.json({ 
+      products: transformedProducts,
+      count: transformedProducts.length,
+      category: category
+    })
   } catch (error) {
     console.error('Products API error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
